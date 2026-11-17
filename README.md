@@ -1,4 +1,4 @@
-# SNEAKER BUZZ / STRIDELAB — Website Bán & Quản Lý Giày (ASP.NET Core MVC + SQL Server)
+#STRIDELAB — Website Bán & Quản Lý Giày (ASP.NET Core MVC + SQL Server)
 
 Dự án đồ án môn **Lập trình Web**: Hệ thống Thương mại Điện tử & Quản lý Cửa hàng Giày phong cách **High-Contrast Streetwear Retail**.
 
@@ -6,7 +6,7 @@ Dự án đồ án môn **Lập trình Web**: Hệ thống Thương mại Điệ
 
 ## 1. Tính năng tự động tạo Database khi Clone từ GitHub
 Dự án đã được tích hợp bộ khởi tạo tự động **`DbInitializer`** (trong file `Data/DbInitializer.cs` và `Program.cs`) kết hợp cùng file kịch bản gốc **`database.sql`**:
-* Khi bất kỳ ai **clone dự án từ GitHub về máy mới** và bấm chạy ứng dụng (`dotnet run` hoặc `F5` trên Visual Studio), hệ thống sẽ **tự động kiểm tra SQL Server**:
+* Khi **clone dự án từ GitHub về máy mới** và bấm chạy ứng dụng (`dotnet run` hoặc `F5` trên Visual Studio), hệ thống sẽ **tự động kiểm tra SQL Server**:
   * Nếu máy chưa có CSDL `QL_ShopGiay` hoặc bảng `SanPham` đang trống, ứng dụng sẽ tự động đọc file `database.sql` và nạp đầy đủ **9 bảng**, **14 đôi giày thực tế**, **75 biến thể Size/Màu**, **14 danh mục 2 cấp**, **4 mã giảm giá** và **các tài khoản/hóa đơn mẫu** mà không cần thao tác tay.
 
 ---
