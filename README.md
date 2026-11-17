@@ -1,4 +1,4 @@
-##STRIDELAB — Website Bán & Quản Lý Giày (ASP.NET Core MVC + SQL Server)
+## STRIDELAB — Website Bán & Quản Lý Giày (ASP.NET Core MVC + SQL Server)
 
 Dự án đồ án môn **Lập trình Web**: Hệ thống Thương mại Điện tử & Quản lý Cửa hàng Giày phong cách **High-Contrast Streetwear Retail**.
 
