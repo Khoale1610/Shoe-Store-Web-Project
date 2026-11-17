@@ -1,0 +1,80 @@
+﻿@model LoginViewModel
+@{
+    ViewData["Title"] = "ĐĂNG NHẬP";
+}
+
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-7 col-lg-5">
+                <div class="border bg-white p-4 p-md-5">
+                    <div class="mb-4 pb-3 border-bottom">
+                        <h3 class="sb-section-title mb-1">ĐĂNG NHẬP TÀI KHOẢN</h3>
+                        <p class="text-muted small mb-0">Hệ thống tự động phân quyền Khách hàng & Quản trị viên (Admin)</p>
+                    </div>
+
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger rounded-0 small">
+                            <div asp-validation-summary="ModelOnly" class="mb-0"></div>
+                        </div>
+                    }
+
+                    <form asp-controller="Account" asp-action="Login" method="post" novalidate>
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="ReturnUrl" />
+
+                        <div class="mb-3">
+                            <label asp-for="TaiKhoan" class="form-label small fw-bold text-uppercase">EMAIL / SĐT / TÊN ĐĂNG NHẬP *</label>
+                            <input asp-for="TaiKhoan" id="loginInputUser" class="form-control form-control-lg rounded-0" placeholder="Nhập Email hoặc Tên đăng nhập" />
+                            <span asp-validation-for="TaiKhoan" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="MatKhau" class="form-label small fw-bold text-uppercase">MẬT KHẨU *</label>
+                            <input asp-for="MatKhau" id="loginInputPass" class="form-control form-control-lg rounded-0" placeholder="Nhập mật khẩu" />
+                            <span asp-validation-for="MatKhau" class="text-danger small"></span>
+                        </div>
+
+                        <button type="submit" class="sb-btn sb-btn-black w-100 mb-3">
+                            ĐĂNG NHẬP NGAY
+                        </button>
+                    </form>
+
+                    <!-- Điền nhanh tài khoản mẫu -->
+                    <div class="p-3 bg-light-gray border mt-3">
+                        <div class="small fw-bold text-uppercase mb-2">TÀI KHOẢN MẪU (CLICK ĐỂ ĐIỀN NHANH):</div>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="button" class="sb-size-square px-3 w-auto" onclick="fillLoginDemo('khachhang@gmail.com', '123456')">
+                                KHÁCH HÀNG
+                            </button>
+                            <button type="button" class="sb-size-square px-3 w-auto" onclick="fillLoginDemo('admin', '123456')">
+                                ADMIN (QUẢN TRỊ)
+                            </button>
+                            <button type="button" class="sb-size-square px-3 w-auto" onclick="fillLoginDemo('nhanvien', '123456')">
+                                NHÂN VIÊN
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4 pt-3 border-top small">
+                        Chưa có tài khoản?
+                        <a asp-controller="Account" asp-action="Register" class="text-sale fw-bold text-decoration-underline ms-1">
+                            ĐĂNG KÝ NGAY
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function fillLoginDemo(user, pass) {
+            document.getElementById('loginInputUser').value = user;
+            document.getElementById('loginInputPass').value = pass;
+        }
+    </script>
+}

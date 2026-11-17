@@ -1,0 +1,63 @@
+﻿@model CategoryFormViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = $"CHỈNH SỬA LOẠI SẢN PHẨM #{Model.MaDanhMuc}";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="adm-panel">
+            <div class="adm-panel-head d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="adm-panel-title mb-0">CẬP NHẬT LOẠI SẢN PHẨM #@Model.MaDanhMuc</h2>
+                    <span class="adm-panel-sub">Chỉnh sửa tên, cấp danh mục hoặc mô tả</span>
+                </div>
+                <a asp-controller="Admin" asp-action="Categories" class="adm-btn adm-btn-outline adm-btn-sm">
+                    ← QUAY LẠI
+                </a>
+            </div>
+
+            <div class="p-4">
+                <form asp-controller="Admin" asp-action="EditCategory" method="post" novalidate>
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="MaDanhMuc" />
+
+                    <div class="mb-3">
+                        <label asp-for="TenDanhMuc" class="adm-label">TÊN LOẠI SẢN PHẨM (DANH MỤC) <span class="text-sale">*</span></label>
+                        <input asp-for="TenDanhMuc" class="adm-input" />
+                        <span asp-validation-for="TenDanhMuc" class="text-sale small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="MaDanhMucCha" class="adm-label">DANH MỤC CHA (ĐỂ TRỐNG NẾU LÀ DANH MỤC GỐC CẤP 1)</label>
+                        <select asp-for="MaDanhMucCha" class="adm-select">
+                            <option value="">— LÀ DANH MỤC CHA (CẤP 1) —</option>
+                            @foreach (var cha in Model.DanhSachDanhMucCha)
+                            {
+                                <option value="@cha.MaDanhMuc">@cha.TenDanhMuc.ToUpper()</option>
+                            }
+                        </select>
+                        <span asp-validation-for="MaDanhMucCha" class="text-sale small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="MoTa" class="adm-label">MÔ TẢ LOẠI SẢN PHẨM</label>
+                        <textarea asp-for="MoTa" rows="3" class="adm-textarea"></textarea>
+                        <span asp-validation-for="MoTa" class="text-sale small"></span>
+                    </div>
+
+                    <div class="d-flex gap-2 pt-2 border-top">
+                        <button type="submit" class="adm-btn adm-btn-black px-4">
+                            <i class="bi bi-save me-2"></i>LƯU THAY ĐỔI
+                        </button>
+                        <a asp-controller="Admin" asp-action="Categories" class="adm-btn adm-btn-outline px-4">HỦY BỎ</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

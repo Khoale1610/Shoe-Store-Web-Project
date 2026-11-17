@@ -1,0 +1,91 @@
+﻿@model List<HoaDon>
+@{
+    ViewData["Title"] = "LỊCH SỬ ĐƠN HÀNG";
+}
+
+<div class="sb-breadcrumb-bar">
+    <div class="container py-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 small text-uppercase">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-decoration-none text-muted">HOME</a></li>
+                <li class="breadcrumb-item active fw-bold text-dark" aria-current="page">ĐƠN HÀNG CỦA TÔI</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="py-5">
+    <div class="container">
+        <div class="sb-section-header mb-4">
+            <h1 class="sb-section-title">LỊCH SỬ ĐƠN HÀNG CỦA TÔI</h1>
+            <div class="sb-section-line"></div>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="sb-empty-state text-center py-5">
+                <h5 class="fw-bold text-uppercase mb-2">BẠN CHƯA CÓ ĐƠN HÀNG NÀO</h5>
+                <p class="text-muted small mb-4">Khám phá ngay các dòng giày Sneaker chính hãng tại cửa hàng.</p>
+                <a asp-controller="Product" asp-action="Index" class="sb-btn sb-btn-black px-4">
+                    MUA SẮM NGAY
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="d-flex flex-column gap-4">
+                @foreach (var hd in Model)
+                {
+                    <div class="border bg-white">
+                        <div class="p-3 bg-light-gray border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <div class="small">
+                                <strong class="text-uppercase">ĐƠN HÀNG #@hd.MaHoaDon</strong>
+                                <span class="text-muted ms-2">| NGÀY ĐẶT: @hd.NgayLap.ToString("dd/MM/yyyy HH:mm")</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="small fw-bold border bg-white px-2 py-1">@hd.PhuongThucThanhToan</span>
+                                <span class="sb-badge-sale" style="background-color: @(hd.TrangThai == "Hoàn thành" ? "#16a34a" : hd.TrangThai == "Đã hủy" ? "#888" : "#E51937");">
+                                    @hd.TrangThai.ToUpper()
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 p-md-4">
+                            @foreach (var ct in hd.ChiTietHoaDons)
+                            {
+                                <div class="d-flex align-items-center justify-content-between py-2 border-bottom">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <img src="@(ct.BienTheSanPham?.SanPham?.HinhAnh)"
+                                             alt="@(ct.BienTheSanPham?.SanPham?.TenSanPham)"
+                                             class="border bg-light-gray"
+                                             style="width: 56px; height: 56px; object-fit: cover;" />
+                                        <div>
+                                            <div class="fw-bold small text-dark">@(ct.BienTheSanPham?.SanPham?.TenSanPham)</div>
+                                            <div class="small text-muted">
+                                                Màu: @(ct.BienTheSanPham?.MauSac?.TenMau) | Size: @(ct.BienTheSanPham?.KichCo?.SoKichCo) | SL: x@ct.SoLuong
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="fw-bold small">@((ct.SoLuong * ct.DonGia).ToString("N0"))₫</div>
+                                </div>
+                            }
+
+                            <div class="d-flex flex-wrap justify-content-between align-items-center pt-3 mt-2">
+                                <div class="small text-muted">
+                                    Giao đến: <strong class="text-dark">@hd.TenNguoiNhan (@hd.SDTNguoiNhan)</strong> — @hd.DiaChiGiaoHang
+                                </div>
+                                <div class="text-end">
+                                    @if (hd.TienGiam > 0)
+                                    {
+                                        <div class="small text-sale">Đã giảm: -@hd.TienGiam.ToString("N0")₫</div>
+                                    }
+                                    <div class="fs-5 fw-black text-sale">TỔNG TIỀN: @hd.TongTien.ToString("N0")₫</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>

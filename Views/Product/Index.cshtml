@@ -1,0 +1,216 @@
+﻿@model ProductListViewModel
+@{
+    ViewData["Title"] = Model.TenDanhMucHienTai ?? "DANH SÁCH SẢN PHẨM";
+}
+
+<!-- Breadcrumb tối giản chuẩn Sneaker Buzz -->
+<div class="sb-breadcrumb-bar">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center py-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 small text-uppercase">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-decoration-none text-muted">HOME</a></li>
+                <li class="breadcrumb-item"><a asp-controller="Product" asp-action="Index" class="text-decoration-none text-muted">SẢN PHẨM</a></li>
+                @if (!string.IsNullOrEmpty(Model.TenDanhMucHienTai))
+                {
+                    <li class="breadcrumb-item active fw-bold text-dark" aria-current="page">@Model.TenDanhMucHienTai.ToUpper()</li>
+                }
+            </ol>
+        </nav>
+        <div class="small text-muted">
+            HIỂN THỊ <strong class="text-dark">@Model.TongSoSanPham</strong> SẢN PHẨM
+        </div>
+    </div>
+</div>
+
+<section class="py-4">
+    <div class="container">
+        <div class="row g-4">
+            <!-- SIDEBAR BỘ LỌC BÊN TRÁI (TỐI GIẢN - SẮC NÉT) -->
+            <div class="col-lg-3">
+                <form asp-controller="Product" asp-action="Index" method="get" id="filterForm" class="sb-filter-box">
+                    <div class="sb-filter-header d-flex justify-content-between align-items-center">
+                        <span>BỘ LỌC SẢN PHẨM</span>
+                        <a asp-controller="Product" asp-action="Index" class="sb-filter-reset">XÓA LỌC</a>
+                    </div>
+
+                    <!-- Tìm theo tên -->
+                    <div class="sb-filter-group">
+                        <div class="sb-filter-title">TỪ KHÓA</div>
+                        <div class="d-flex">
+                            <input type="text" name="tuKhoa" value="@Model.TuKhoa" class="sb-input" placeholder="Nhập tên giày, SKU..." />
+                            <button type="submit" class="sb-btn sb-btn-black px-3" style="height: 38px;"><i class="bi bi-search"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- 1. Lọc theo Danh mục (2 cấp) -->
+                    <div class="sb-filter-group">
+                        <div class="sb-filter-title">DANH MỤC GIÀY</div>
+                        <div class="d-flex flex-column gap-2">
+                            <label class="sb-check-label">
+                                <input type="radio" name="maDanhMuc" value="" checked="@(!Model.MaDanhMuc.HasValue)" onchange="this.form.submit()" />
+                                <span class="fw-bold">TẤT CẢ DANH MỤC</span>
+                            </label>
+
+                            @foreach (var cha in Model.DanhMucCha)
+                            {
+                                <div class="mt-1">
+                                    <label class="sb-check-label">
+                                        <input type="radio" name="maDanhMuc" value="@cha.MaDanhMuc" checked="@(Model.MaDanhMuc == cha.MaDanhMuc)" onchange="this.form.submit()" />
+                                        <span class="fw-bold text-dark">@cha.TenDanhMuc.ToUpper()</span>
+                                    </label>
+                                    @if (cha.DanhMucCons != null && cha.DanhMucCons.Any())
+                                    {
+                                        <div class="ps-3 mt-1 d-flex flex-column gap-1 border-start">
+                                            @foreach (var con in cha.DanhMucCons)
+                                            {
+                                                <label class="sb-check-label">
+                                                    <input type="radio" name="maDanhMuc" value="@con.MaDanhMuc" checked="@(Model.MaDanhMuc == con.MaDanhMuc)" onchange="this.form.submit()" />
+                                                    <span class="text-secondary">@con.TenDanhMuc</span>
+                                                </label>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- 2. Lọc theo Thương hiệu -->
+                    <div class="sb-filter-group">
+                        <div class="sb-filter-title">THƯƠNG HIỆU (BRAND)</div>
+                        <div class="d-flex flex-column gap-1">
+                            <label class="sb-check-label">
+                                <input type="radio" name="thuongHieu" value="" checked="@string.IsNullOrEmpty(Model.ThuongHieu)" onchange="this.form.submit()" />
+                                <span>Tất cả thương hiệu</span>
+                            </label>
+                            @foreach (var brand in Model.ThuongHieus)
+                            {
+                                <label class="sb-check-label">
+                                    <input type="radio" name="thuongHieu" value="@brand" checked="@(Model.ThuongHieu == brand)" onchange="this.form.submit()" />
+                                    <span class="text-uppercase fw-semibold">@brand</span>
+                                </label>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- 3. Lọc theo Kích cỡ (Dạng ô vuông chọn Size chuẩn Sneaker Buzz) -->
+                    <div class="sb-filter-group">
+                        <div class="sb-filter-title d-flex justify-content-between">
+                            <span>KÍCH CỠ (SIZE)</span>
+                            @if (!string.IsNullOrEmpty(Model.KichCo))
+                            {
+                                <a href="javascript:void(0)" onclick="document.getElementById('hiddenKichCo').value=''; document.getElementById('filterForm').submit();" class="small text-sale text-decoration-none">Bỏ chọn</a>
+                            }
+                        </div>
+                        <input type="hidden" name="kichCo" id="hiddenKichCo" value="@Model.KichCo" />
+                        <div class="sb-size-filter-grid">
+                            @foreach (var sz in Model.KichCos)
+                            {
+                                bool isSelected = Model.KichCo == sz;
+                                <button type="button"
+                                        class="sb-size-square @(isSelected ? "active" : "")"
+                                        onclick="document.getElementById('hiddenKichCo').value='@(isSelected ? "" : sz)'; document.getElementById('filterForm').submit();">
+                                    @sz
+                                </button>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- 4. Lọc theo Khoảng giá -->
+                    <div class="sb-filter-group">
+                        <div class="sb-filter-title">KHOẢNG GIÁ</div>
+                        <div class="d-flex flex-column gap-2">
+                            <label class="sb-check-label">
+                                <input type="radio" name="mucGia" value="" checked="@string.IsNullOrEmpty(Model.MucGia)" onchange="this.form.submit()" />
+                                <span>Tất cả mức giá</span>
+                            </label>
+                            <label class="sb-check-label">
+                                <input type="radio" name="mucGia" value="duoi-2tr" checked="@(Model.MucGia == "duoi-2tr")" onchange="this.form.submit()" />
+                                <span>Dưới 2,000,000₫</span>
+                            </label>
+                            <label class="sb-check-label">
+                                <input type="radio" name="mucGia" value="2tr-3tr" checked="@(Model.MucGia == "2tr-3tr")" onchange="this.form.submit()" />
+                                <span>2,000,000₫ - 3,000,000₫</span>
+                            </label>
+                            <label class="sb-check-label">
+                                <input type="radio" name="mucGia" value="3tr-4tr" checked="@(Model.MucGia == "3tr-4tr")" onchange="this.form.submit()" />
+                                <span>3,000,000₫ - 4,000,000₫</span>
+                            </label>
+                            <label class="sb-check-label">
+                                <input type="radio" name="mucGia" value="tren-4tr" checked="@(Model.MucGia == "tren-4tr")" onchange="this.form.submit()" />
+                                <span>Trên 4,000,000₫</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 5. Lọc theo Giới tính -->
+                    <div class="sb-filter-group border-bottom-0 pb-0">
+                        <div class="sb-filter-title">GIỚI TÍNH</div>
+                        <div class="d-flex gap-2">
+                            <input type="hidden" name="gioiTinh" id="hiddenGioiTinh" value="@Model.GioiTinh" />
+                            @foreach (var gt in new[] { "", "Nam", "Nữ", "Unisex" })
+                            {
+                                string label = string.IsNullOrEmpty(gt) ? "TẤT CẢ" : gt.ToUpper();
+                                bool active = (Model.GioiTinh ?? "") == gt;
+                                <button type="button"
+                                        class="sb-size-square flex-grow-1 @(active ? "active" : "")"
+                                        onclick="document.getElementById('hiddenGioiTinh').value='@gt'; document.getElementById('filterForm').submit();">
+                                    @label
+                                </button>
+                            }
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="nhanNoiBat" value="@Model.NhanNoiBat" />
+                    <input type="hidden" name="sapXep" id="hiddenSapXep" value="@Model.SapXep" />
+                </form>
+            </div>
+
+            <!-- DANH SÁCH SẢN PHẨM DẠNG LƯỚI -->
+            <div class="col-lg-9">
+                <!-- Thanh tiêu đề & Sắp xếp -->
+                <div class="sb-list-toolbar d-flex flex-wrap justify-content-between align-items-center mb-4 pb-3 border-bottom gap-2">
+                    <div>
+                        <h1 class="sb-page-heading mb-0">@(Model.TenDanhMucHienTai?.ToUpper() ?? "TẤT CẢ SẢN PHẨM")</h1>
+                        @if (!string.IsNullOrEmpty(Model.MoTaDanhMucHienTai))
+                        {
+                            <p class="small text-muted mb-0 mt-1">@Model.MoTaDanhMucHienTai</p>
+                        }
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="small fw-bold text-uppercase text-muted text-nowrap">SẮP XẾP:</span>
+                        <select class="sb-select"
+                                onchange="document.getElementById('hiddenSapXep').value = this.value; document.getElementById('filterForm').submit();">
+                            <option value="" selected="@string.IsNullOrEmpty(Model.SapXep)">Mới nhất</option>
+                            <option value="gia-tang" selected="@(Model.SapXep == "gia-tang")">Giá: Thấp → Cao</option>
+                            <option value="gia-giam" selected="@(Model.SapXep == "gia-giam")">Giá: Cao → Thấp</option>
+                            <option value="ten-az" selected="@(Model.SapXep == "ten-az")">Tên: A → Z</option>
+                        </select>
+                    </div>
+                </div>
+
+                @if (Model.SanPhams.Any())
+                {
+                    <div class="row g-3 g-md-4">
+                        @foreach (var item in Model.SanPhams)
+                        {
+                            <div class="col-6 col-md-4">
+                                <partial name="_ProductCard" model="item" />
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="sb-empty-state text-center py-5">
+                        <i class="bi bi-search fs-1 text-muted d-block mb-3"></i>
+                        <h5 class="fw-bold text-uppercase">KHÔNG TÌM THẤY SẢN PHẨM PHÙ HỢP</h5>
+                        <p class="text-muted small mb-4">Vui lòng thử chọn lại Danh mục, Kích cỡ hoặc Khoảng giá khác.</p>
+                        <a asp-controller="Product" asp-action="Index" class="sb-btn sb-btn-black">XEM TẤT CẢ GIÀY</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>

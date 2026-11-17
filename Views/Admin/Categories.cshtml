@@ -1,0 +1,101 @@
+﻿@model List<DanhMuc>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "QUẢN LÝ LOẠI SẢN PHẨM";
+}
+
+<!-- Toolbar trên cùng -->
+<div class="adm-toolbar d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+    <div>
+        <div class="adm-section-title">DANH SÁCH CÁC LOẠI GIÀY (@Model.Count DANH MỤC)</div>
+        <div class="adm-section-sub">Cấu trúc danh mục 2 cấp (Danh mục Cha Cấp 1 & Danh mục Con Cấp 2) đồng bộ trực tiếp lên Menu</div>
+    </div>
+    <a asp-controller="Admin" asp-action="CreateCategory" class="adm-btn adm-btn-red">
+        <i class="bi bi-plus-lg me-2"></i>THÊM LOẠI SẢN PHẨM MỚI
+    </a>
+</div>
+
+<!-- Bảng Danh mục sắc nét -->
+<div class="adm-panel">
+    <div class="table-responsive">
+        <table class="table adm-table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th style="width: 90px;">MÃ DM</th>
+                    <th>TÊN LOẠI SẢN PHẨM</th>
+                    <th>CẤP DANH MỤC</th>
+                    <th>MÔ TẢ CHI TIẾT</th>
+                    <th class="text-center" style="width: 150px;">SỐ LƯỢNG</th>
+                    <th class="text-end" style="width: 190px;">THAO TÁC</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    bool isParent = item.MaDanhMucCha == null;
+                    int productCount = item.SanPhams?.Count ?? 0;
+                    int childCount = item.DanhMucCons?.Count ?? 0;
+
+                    <tr class="@(isParent ? "adm-row-parent" : "adm-row-child")">
+                        <td class="fw-extrabold">#@item.MaDanhMuc</td>
+                        <td>
+                            @if (isParent)
+                            {
+                                <span class="adm-cat-parent-name">
+                                    <i class="bi bi-folder-fill me-2"></i>@item.TenDanhMuc.ToUpper()
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="adm-cat-child-name">
+                                    <span class="adm-child-arrow">↳</span> @item.TenDanhMuc
+                                </span>
+                            }
+                        </td>
+                        <td>
+                            @if (isParent)
+                            {
+                                <span class="adm-badge adm-badge-black">DANH MỤC CHA (CẤP 1)</span>
+                            }
+                            else
+                            {
+                                <span class="adm-badge adm-badge-gray">THUỘC: @(item.DanhMucCha?.TenDanhMuc.ToUpper())</span>
+                            }
+                        </td>
+                        <td class="small text-secondary">@item.MoTa</td>
+                        <td class="text-center">
+                            @if (productCount > 0)
+                            {
+                                <span class="adm-badge adm-badge-red">@productCount ĐÔI GIÀY</span>
+                            }
+                            else if (childCount > 0)
+                            {
+                                <span class="adm-badge adm-badge-black">@childCount MỤC CON</span>
+                            }
+                            else
+                            {
+                                <span class="adm-badge adm-badge-gray">TRỐNG (0)</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <div class="d-inline-flex gap-1">
+                                <a asp-controller="Admin" asp-action="EditCategory" asp-route-id="@item.MaDanhMuc"
+                                   class="adm-action-btn adm-action-edit">
+                                    <i class="bi bi-pencil-square"></i> SỬA
+                                </a>
+
+                                <form asp-controller="Admin" asp-action="DeleteCategory" asp-route-id="@item.MaDanhMuc" method="post"
+                                      onsubmit="return confirm('Xác nhận xóa loại sản phẩm [@item.TenDanhMuc]?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="adm-action-btn adm-action-delete">
+                                        <i class="bi bi-trash3"></i> XÓA
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

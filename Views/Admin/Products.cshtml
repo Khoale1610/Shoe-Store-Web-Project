@@ -1,0 +1,137 @@
+﻿@model List<SanPham>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "QUẢN LÝ SẢN PHẨM";
+    var danhMucs = ViewBag.DanhSachDanhMuc as List<DanhMuc> ?? new List<DanhMuc>();
+}
+
+<!-- Thanh công cụ tìm kiếm & lọc nhanh sản phẩm -->
+<div class="adm-panel p-3 mb-3 d-flex flex-wrap justify-content-between align-items-center gap-3">
+    <form asp-controller="Admin" asp-action="Products" method="get" class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+        <div class="d-flex" style="width: 300px;">
+            <input type="text" name="tuKhoa" value="@ViewBag.TuKhoa" class="adm-input" placeholder="Tìm theo tên giày, hãng..." />
+        </div>
+
+        <select name="maDanhMuc" class="adm-select" style="width: 240px;" onchange="this.form.submit()">
+            <option value="">— TẤT CẢ LOẠI SẢN PHẨM —</option>
+            @foreach (var dm in danhMucs)
+            {
+                <option value="@dm.MaDanhMuc" selected="@(ViewBag.MaDanhMuc != null && (int)ViewBag.MaDanhMuc == dm.MaDanhMuc)">
+                    @(dm.MaDanhMucCha == null ? $"[CHA] {dm.TenDanhMuc.ToUpper()}" : $"   ↳ {dm.TenDanhMuc}")
+                </option>
+            }
+        </select>
+
+        <button type="submit" class="adm-btn adm-btn-black px-3">LỌC</button>
+        @if (!string.IsNullOrEmpty(ViewBag.TuKhoa as string) || ViewBag.MaDanhMuc != null)
+        {
+            <a asp-controller="Admin" asp-action="Products" class="adm-btn adm-btn-outline px-3">XÓA LỌC</a>
+        }
+    </form>
+
+    <a asp-controller="Admin" asp-action="CreateProduct" class="adm-btn adm-btn-red">
+        <i class="bi bi-plus-lg me-2"></i>THÊM SẢN PHẨM MỚI
+    </a>
+</div>
+
+<div class="adm-panel">
+    <div class="table-responsive">
+        <table class="table adm-table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th style="width: 75px;">MÃ SP</th>
+                    <th>HÌNH ẢNH & TÊN SẢN PHẨM</th>
+                    <th>LOẠI GIÀY</th>
+                    <th>GIỚI TÍNH & NHÃN</th>
+                    <th>GIÁ GỐC / GIÁ BÁN</th>
+                    <th>KÍCH CỠ & MÀU SẮC</th>
+                    <th class="text-center">TỔNG KHO</th>
+                    <th class="text-end" style="width: 175px;">THAO TÁC</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var sp in Model)
+                {
+                    var sizes = sp.BienTheSanPhams.Where(b => b.KichCo != null).Select(b => b.KichCo!.SoKichCo).Distinct().OrderBy(s => s).ToList();
+                    var colors = sp.BienTheSanPhams.Where(b => b.MauSac != null).Select(b => b.MauSac!).GroupBy(m => m.MaMau).Select(g => g.First()).ToList();
+
+                    <tr>
+                        <td class="fw-extrabold">#@sp.MaSanPham</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="@sp.HinhAnh"
+                                     alt="@sp.TenSanPham"
+                                     class="adm-thumb-50"
+                                     onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=300&q=80';" />
+                                <div>
+                                    <div class="fw-bold text-dark">@sp.TenSanPham</div>
+                                    <span class="adm-badge adm-badge-gray mt-1">@(sp.ThuongHieu?.ToUpper() ?? "STRIDELAB")</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="fw-semibold small text-dark">@(sp.DanhMuc?.TenDanhMuc)</span>
+                        </td>
+                        <td>
+                            <div class="mb-1">
+                                <span class="adm-badge adm-badge-outline">@sp.GioiTinh?.ToUpper()</span>
+                            </div>
+                            <div class="d-flex flex-wrap gap-1">
+                                @if (!string.IsNullOrEmpty(sp.NhanNoiBat))
+                                {
+                                    foreach (var tag in sp.NhanNoiBat.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                                    {
+                                        <span class="adm-badge @(tag.Trim() == "Moi" ? "adm-badge-black" : tag.Trim() == "BanChay" ? "adm-badge-red" : "adm-badge-gray")">
+                                            @(tag.Trim() == "Moi" ? "MỚI" : tag.Trim() == "BanChay" ? "BÁN CHẠY" : "GIẢM GIÁ")
+                                        </span>
+                                    }
+                                }
+                            </div>
+                        </td>
+                        <td>
+                            <div class="text-muted text-decoration-line-through small">@sp.GiaGoc.ToString("N0")₫</div>
+                            <div class="fw-extrabold text-sale">@sp.GiaThapNhat.ToString("N0")₫</div>
+                        </td>
+                        <td>
+                            <div class="small fw-semibold mb-1">
+                                Size: @(sizes.Any() ? string.Join(", ", sizes) : "—")
+                            </div>
+                            <div class="d-flex align-items-center gap-1">
+                                @foreach (var c in colors)
+                                {
+                                    <span class="color-dot" style="background-color: @c.MaHex;" title="@c.TenMau"></span>
+                                }
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            @if (sp.TongTonKho > 0)
+                            {
+                                <span class="adm-badge adm-badge-black">@sp.TongTonKho ĐÔI</span>
+                            }
+                            else
+                            {
+                                <span class="adm-badge adm-badge-red">HẾT HÀNG (0)</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <div class="d-inline-flex gap-1">
+                                <a asp-controller="Admin" asp-action="EditProduct" asp-route-id="@sp.MaSanPham"
+                                   class="adm-action-btn adm-action-edit">
+                                    <i class="bi bi-pencil-square"></i> SỬA
+                                </a>
+
+                                <form asp-controller="Admin" asp-action="DeleteProduct" asp-route-id="@sp.MaSanPham" method="post"
+                                      onsubmit="return confirm('Xác nhận xóa sản phẩm [@sp.TenSanPham]?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="adm-action-btn adm-action-delete">
+                                        <i class="bi bi-trash3"></i> XÓA
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

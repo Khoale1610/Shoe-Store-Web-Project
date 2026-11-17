@@ -1,0 +1,252 @@
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    var session = HttpContextAccessor.HttpContext?.Session;
+    var cartItems = session?.GetObject<List<CartItemViewModel>>("CART_ITEMS") ?? new List<CartItemViewModel>();
+    int cartCount = cartItems.Sum(i => i.SoLuong);
+    decimal cartTotal = cartItems.Sum(i => i.ThanhTien);
+
+    int? customerId = session?.GetInt32("CustomerId");
+    string? customerName = session?.GetString("CustomerName");
+    int? adminId = session?.GetInt32("AdminId");
+    string? adminName = session?.GetString("AdminName");
+    string? userRole = session?.GetString("UserRole");
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SNEAKER BUZZ | STRIDELAB STREETWEAR RETAIL</title>
+    <!-- Google Fonts: Montserrat (Bold Uppercase Headings/Menu/Prices) & Inter (Clean Body/SKU) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5.3 & Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    <!-- 1. TOP-BAR (Nền đen #111111, chữ trắng 12px chuẩn Sneaker Buzz) -->
+    <div class="sb-topbar">
+        <div class="container d-flex flex-wrap justify-content-between align-items-center">
+            <!-- Bên trái: Slogan thương hiệu + Hotline tư vấn -->
+            <div class="d-flex align-items-center gap-3">
+                <span class="sb-slogan">NOT SHOES, WE ARE SNEAKER</span>
+                <span class="sb-divider d-none d-sm-inline">|</span>
+                <a href="tel:19006868" class="sb-topbar-link d-none d-sm-inline">
+                    <i class="bi bi-telephone-fill me-1"></i>HOTLINE TƯ VẤN: <strong>1900 6868</strong>
+                </a>
+            </div>
+
+            <!-- Bên phải: Đăng nhập | Đăng ký (hoặc tên user) + Giỏ hàng hiển thị Số lượng & Tổng tiền trực tiếp -->
+            <div class="d-flex align-items-center gap-3">
+                @if (adminId.HasValue)
+                {
+                    <a asp-controller="Admin" asp-action="Index" class="sb-topbar-link text-sale fw-bold">
+                        <i class="bi bi-shield-lock-fill me-1"></i>QUẢN TRỊ (@adminName)
+                    </a>
+                    <span class="sb-divider">|</span>
+                    <a asp-controller="Account" asp-action="Logout" class="sb-topbar-link">ĐĂNG XUẤT</a>
+                }
+                else if (customerId.HasValue)
+                {
+                    <a asp-controller="Account" asp-action="Orders" class="sb-topbar-link">
+                        <i class="bi bi-person-fill me-1"></i>@customerName.ToUpper() (ĐƠN HÀNG)
+                    </a>
+                    <span class="sb-divider">|</span>
+                    <a asp-controller="Account" asp-action="Logout" class="sb-topbar-link">ĐĂNG XUẤT</a>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="sb-topbar-link">ĐĂNG NHẬP</a>
+                    <span class="sb-divider">|</span>
+                    <a asp-controller="Account" asp-action="Register" class="sb-topbar-link">ĐĂNG KÝ</a>
+                }
+
+                <span class="sb-divider">|</span>
+
+                <a asp-controller="Cart" asp-action="Index" class="sb-topbar-cart">
+                    <i class="bi bi-bag-fill me-1"></i>
+                    <span>GIỎ HÀNG (<strong id="headerCartBadge">@cartCount</strong>) - <strong id="headerCartTotal">@cartTotal.ToString("N0")₫</strong></span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. MAIN HEADER & NAVIGATION (Nền trắng, Sticky khi cuộn) -->
+    <header class="sb-header sticky-top bg-white">
+        <div class="sb-header-upper">
+            <div class="container">
+                <div class="row align-items-center py-3 g-3">
+                    <!-- Logo chữ đậm in hoa bên trái -->
+                    <div class="col-6 col-lg-4">
+                        <a asp-controller="Home" asp-action="Index" class="sb-logo text-decoration-none">
+                            SNEAKER<span class="sb-logo-accent">BUZZ</span>
+                            <span class="sb-logo-sub">BY STRIDELAB</span>
+                        </a>
+                    </div>
+
+                    <!-- Nút mở menu trên Mobile -->
+                    <div class="col-6 d-lg-none text-end">
+                        <button class="sb-mobile-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#sbMainNavbar" aria-label="Menu">
+                            <i class="bi bi-list fs-3"></i>
+                        </button>
+                    </div>
+
+                    <!-- Thanh tìm kiếm tối giản (viền mảnh / gạch chân) ở giữa/phải -->
+                    <div class="col-12 col-lg-5 ms-lg-auto">
+                        <form asp-controller="Product" asp-action="Index" method="get" class="position-relative" id="headerSearchForm" autocomplete="off">
+                            <div class="sb-search-box d-flex align-items-center">
+                                <input type="text"
+                                       name="tuKhoa"
+                                       id="liveSearchInput"
+                                       value="@Context.Request.Query["tuKhoa"]"
+                                       class="sb-search-input"
+                                       placeholder="TÌM KIẾM GIÀY, THƯƠNG HIỆU, MÃ SKU..." />
+                                <button type="submit" class="sb-search-btn" aria-label="Tìm kiếm">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                            <!-- Hộp gợi ý tìm kiếm trực tiếp AJAX -->
+                            <div id="liveSearchResults" class="sb-live-search d-none"></div>
+                        </form>
+                    </div>
+
+                    <!-- Nút Giỏ hàng nhanh trên Header chính (Desktop) -->
+                    <div class="col-lg-3 d-none d-lg-flex justify-content-end align-items-center gap-3">
+                        <a asp-controller="Account" asp-action="Orders" class="sb-header-icon-link" title="Tra cứu đơn hàng">
+                            <i class="bi bi-truck"></i>
+                            <span>TRA CỨU ĐƠN</span>
+                        </a>
+                        <a asp-controller="Cart" asp-action="Index" class="sb-header-icon-link" title="Giỏ hàng">
+                            <i class="bi bi-bag"></i>
+                            <span>GIỎ HÀNG</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thanh Menu 2 cấp nằm ngang chữ IN HOA đậm -->
+        <nav class="sb-navbar navbar-expand-lg">
+            <div class="container">
+                <div class="collapse navbar-collapse" id="sbMainNavbar">
+                    @await Component.InvokeAsync("CategoryMenu")
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- NỘI DUNG CHÍNH -->
+    <main class="flex-grow-1">
+        @RenderBody()
+    </main>
+
+    <!-- TOAST THÔNG BÁO SẮC NÉT -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1090;">
+        <div id="liveToast" class="toast sb-toast border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex align-items-center justify-content-between p-3">
+                <div class="d-flex align-items-center gap-2">
+                    <i id="liveToastIcon" class="bi bi-check-square-fill text-white"></i>
+                    <span id="liveToastMessage" class="fw-semibold small text-white">Đã cập nhật giỏ hàng!</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white ms-3" data-bs-dismiss="toast" aria-label="Đóng"></button>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["ToastSuccess"] != null)
+    {
+        <div data-server-toast="@TempData["ToastSuccess"]" data-server-toast-type="success" class="d-none"></div>
+    }
+    @if (TempData["ToastWarning"] != null)
+    {
+        <div data-server-toast="@TempData["ToastWarning"]" data-server-toast-type="warning" class="d-none"></div>
+    }
+
+    <!-- 5. FOOTER (Nền đen #111111, chữ trắng/xám sáng, chia 4 cột chuẩn Sneaker Buzz) -->
+    <footer class="sb-footer mt-5">
+        <div class="container py-5">
+            <div class="row g-4">
+                <!-- Cột 1: Thông tin cửa hàng -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="sb-footer-logo mb-3">
+                        SNEAKER<span class="text-sale">BUZZ</span>
+                    </div>
+                    <p class="sb-footer-text mb-3">
+                        NOT SHOES, WE ARE SNEAKER. Hệ thống bán lẻ giày Sneaker, giày thể thao và phụ kiện chính hãng chuẩn Streetwear hàng đầu Việt Nam.
+                    </p>
+                    <ul class="list-unstyled sb-footer-contact mb-0">
+                        <li><strong>ĐỊA CHỈ:</strong> 268 Lý Thường Kiệt, Q.10, TP.HCM</li>
+                        <li><strong>HOTLINE:</strong> 1900 6868 (08:30 - 22:00)</li>
+                        <li><strong>EMAIL:</strong> cskh@sneakerbuzz.vn</li>
+                    </ul>
+                </div>
+
+                <!-- Cột 2: Chính sách đổi trả & Bảo hành -->
+                <div class="col-md-6 col-lg-3">
+                    <h6 class="sb-footer-heading">CHÍNH SÁCH ĐỔI TRẢ</h6>
+                    <ul class="list-unstyled sb-footer-links">
+                        <li><a href="#">Chính sách đổi Size trong 30 ngày</a></li>
+                        <li><a href="#">Chính sách bảo hành chính hãng</a></li>
+                        <li><a href="#">Chính sách vận chuyển & Kiểm hàng</a></li>
+                        <li><a href="#">Chính sách bảo mật thông tin</a></li>
+                        <li><a href="#">Điều khoản dịch vụ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Cột 3: Hỗ trợ khách hàng -->
+                <div class="col-md-6 col-lg-3">
+                    <h6 class="sb-footer-heading">HỖ TRỢ KHÁCH HÀNG</h6>
+                    <ul class="list-unstyled sb-footer-links">
+                        <li><a asp-controller="Product" asp-action="Index">Tất cả sản phẩm</a></li>
+                        <li><a asp-controller="Cart" asp-action="Index">Giỏ hàng & Thanh toán</a></li>
+                        <li><a asp-controller="Account" asp-action="Orders">Tra cứu lịch sử đơn hàng</a></li>
+                        <li><a asp-controller="Account" asp-action="Login">Đăng nhập tài khoản</a></li>
+                        <li><a asp-controller="Account" asp-action="Register">Đăng ký thành viên mới</a></li>
+                    </ul>
+                </div>
+
+                <!-- Cột 4: Đăng ký nhận tin -->
+                <div class="col-md-6 col-lg-3">
+                    <h6 class="sb-footer-heading">ĐĂNG KÝ NHẬN TIN</h6>
+                    <p class="sb-footer-text mb-3">
+                        Nhận thông tin mở bán các dòng Sneaker giới hạn và ưu đãi giảm giá lên đến 40%.
+                    </p>
+                    <form onsubmit="event.preventDefault(); showToast('Đăng ký nhận bản tin thành công!');" class="mb-3">
+                        <div class="d-flex">
+                            <input type="email" class="sb-newsletter-input" placeholder="Nhập địa chỉ Email của bạn..." required />
+                            <button type="submit" class="sb-newsletter-btn">GỬI</button>
+                        </div>
+                    </form>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="sb-social-sq" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="sb-social-sq" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="sb-social-sq" aria-label="Youtube"><i class="bi bi-youtube"></i></a>
+                        <a href="#" class="sb-social-sq" aria-label="Tiktok"><i class="bi bi-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sb-footer-bottom">
+            <div class="container d-flex flex-wrap justify-content-between align-items-center py-3">
+                <div>© @DateTime.Now.Year <strong>SNEAKER BUZZ - QL_ShopGiay</strong>. ALL RIGHTS RESERVED.</div>
+                <div class="d-flex gap-3">
+                    <span>THANH TOÁN COD</span>
+                    <span>|</span>
+                    <span>CHUYỂN KHOẢN VIETQR</span>
+                    <span>|</span>
+                    <span>100% AUTHENTIC</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

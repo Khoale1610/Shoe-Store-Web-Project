@@ -1,0 +1,79 @@
+﻿@model PromotionFormViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "TẠO MÃ GIẢM GIÁ MỚI";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="adm-panel">
+            <div class="adm-panel-head d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="adm-panel-title mb-0">THÊM CHƯƠNG TRÌNH KHUYẾN MÃI MỚI</h2>
+                    <span class="adm-panel-sub">Tạo mã Code giảm giá theo phần trăm (%) áp dụng tại Giỏ hàng</span>
+                </div>
+                <a asp-controller="Admin" asp-action="Promotions" class="adm-btn adm-btn-outline adm-btn-sm">
+                    ← QUAY LẠI
+                </a>
+            </div>
+
+            <div class="p-4">
+                <form asp-controller="Admin" asp-action="CreatePromotion" method="post" novalidate>
+                    @Html.AntiForgeryToken()
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="MaCode" class="adm-label">MÃ CODE GIẢM GIÁ <span class="text-sale">*</span></label>
+                            <input asp-for="MaCode" class="adm-input text-uppercase fw-bold" placeholder="VD: SUMMER25" />
+                            <span asp-validation-for="MaCode" class="text-sale small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="PhanTramGiam" class="adm-label">PHẦN TRĂM GIẢM (1% - 100%) <span class="text-sale">*</span></label>
+                            <input asp-for="PhanTramGiam" type="number" min="1" max="100" class="adm-input fw-bold text-sale" />
+                            <span asp-validation-for="PhanTramGiam" class="text-sale small"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="TenChuongTrinh" class="adm-label">TÊN CHƯƠNG TRÌNH KHUYẾN MÃI <span class="text-sale">*</span></label>
+                            <input asp-for="TenChuongTrinh" class="adm-input" placeholder="VD: Đại tiệc Sale Mùa Hè - Giảm 25%" />
+                            <span asp-validation-for="TenChuongTrinh" class="text-sale small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="NgayBatDau" class="adm-label">NGÀY BẮT ĐẦU <span class="text-sale">*</span></label>
+                            <input asp-for="NgayBatDau" type="date" class="adm-input" />
+                            <span asp-validation-for="NgayBatDau" class="text-sale small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="NgayKetThuc" class="adm-label">NGÀY KẾT THÚC <span class="text-sale">*</span></label>
+                            <input asp-for="NgayKetThuc" type="date" class="adm-input" />
+                            <span asp-validation-for="NgayKetThuc" class="text-sale small"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="adm-field-box mt-2">
+                                <label class="adm-choice-tile">
+                                    <input asp-for="TrangThai" type="checkbox" />
+                                    <span>KÍCH HOẠT MÃ GIẢM GIÁ NGAY (HIỂN THỊ TẠI GIỎ HÀNG KHÁCH)</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4 pt-3 border-top">
+                        <button type="submit" class="adm-btn adm-btn-red px-4">
+                            <i class="bi bi-check2 me-2"></i>LƯU MÃ GIẢM GIÁ
+                        </button>
+                        <a asp-controller="Admin" asp-action="Promotions" class="adm-btn adm-btn-outline px-4">HỦY BỎ</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,169 @@
+﻿@model CheckoutViewModel
+@{
+    ViewData["Title"] = "THANH TOÁN & ĐẶT HÀNG";
+}
+
+<div class="sb-breadcrumb-bar">
+    <div class="container py-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 small text-uppercase">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-decoration-none text-muted">HOME</a></li>
+                <li class="breadcrumb-item"><a asp-controller="Cart" asp-action="Index" class="text-decoration-none text-muted">GIỎ HÀNG</a></li>
+                <li class="breadcrumb-item active fw-bold text-dark" aria-current="page">THANH TOÁN ĐƠN HÀNG</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="py-5">
+    <div class="container">
+        <div class="sb-section-header mb-4">
+            <h1 class="sb-section-title">THANH TOÁN & ĐẶT HÀNG</h1>
+            <div class="sb-section-line"></div>
+        </div>
+
+        <form asp-controller="Cart" asp-action="Checkout" method="post" novalidate>
+            @Html.AntiForgeryToken()
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger rounded-0 border-dark mb-4 small">
+                    <div asp-validation-summary="ModelOnly" class="mb-0"></div>
+                </div>
+            }
+
+            <div class="row g-4">
+                <!-- Cột Thông tin giao hàng & Phương thức thanh toán -->
+                <div class="col-lg-7">
+                    <div class="border bg-white p-4 mb-4">
+                        <h6 class="fw-extrabold text-uppercase pb-3 mb-4 border-bottom">
+                            1. THÔNG TIN GIAO HÀNG
+                        </h6>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="TenNguoiNhan" class="form-label small fw-bold text-uppercase">HỌ VÀ TÊN NGƯỜI NHẬN *</label>
+                                <input asp-for="TenNguoiNhan" class="form-control rounded-0" placeholder="Nhập họ và tên người nhận" />
+                                <span asp-validation-for="TenNguoiNhan" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="SDTNguoiNhan" class="form-label small fw-bold text-uppercase">SỐ ĐIỆN THOẠI LIÊN HỆ *</label>
+                                <input asp-for="SDTNguoiNhan" class="form-control rounded-0" placeholder="VD: 0912345678" />
+                                <span asp-validation-for="SDTNguoiNhan" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="DiaChiGiaoHang" class="form-label small fw-bold text-uppercase">ĐỊA CHỈ NHẬN HÀNG CHI TIẾT *</label>
+                                <input asp-for="DiaChiGiaoHang" class="form-control rounded-0" placeholder="Số nhà, tên đường, Phường/Xã, Quận/Huyện, Tỉnh/TP" />
+                                <span asp-validation-for="DiaChiGiaoHang" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="GhiChu" class="form-label small fw-bold text-uppercase">GHI CHÚ ĐƠN HÀNG (TÙY CHỌN)</label>
+                                <textarea asp-for="GhiChu" rows="2" class="form-control rounded-0" placeholder="Ghi chú về thời gian giao hàng..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border bg-white p-4">
+                        <h6 class="fw-extrabold text-uppercase pb-3 mb-4 border-bottom">
+                            2. PHƯƠNG THỨC THANH TOÁN
+                        </h6>
+
+                        <div class="d-flex flex-column gap-3">
+                            <label class="p-3 border d-flex align-items-start gap-3 cursor-pointer">
+                                <input type="radio" asp-for="PhuongThucThanhToan" value="COD" class="form-check-input mt-1" checked onchange="toggleBankTransferInfo()" />
+                                <div>
+                                    <div class="fw-bold text-uppercase small">THANH TOÁN KHI NHẬN HÀNG (COD)</div>
+                                    <div class="small text-muted mt-1">Kiểm tra đúng mẫu giày và kích cỡ trước khi thanh toán tiền mặt cho nhân viên giao hàng.</div>
+                                </div>
+                            </label>
+
+                            <label class="p-3 border d-flex align-items-start gap-3 cursor-pointer">
+                                <input type="radio" asp-for="PhuongThucThanhToan" value="Chuyển khoản" class="form-check-input mt-1" onchange="toggleBankTransferInfo()" />
+                                <div class="w-100">
+                                    <div class="fw-bold text-uppercase small">CHUYỂN KHOẢN NGÂN HÀNG (VIETQR 24/7)</div>
+                                    <div class="small text-muted mt-1">Chuyển khoản trực tiếp qua ứng dụng ngân hàng để ưu tiên xử lý đơn nhanh.</div>
+
+                                    <div id="bankTransferBox" class="mt-3 p-3 bg-light-gray border d-none small">
+                                        <div class="fw-bold text-uppercase mb-1">THÔNG TIN TÀI KHOẢN SNEAKER BUZZ:</div>
+                                        <div>Ngân hàng: <strong>VIETCOMBANK - CN TP.HCM</strong></div>
+                                        <div>Số tài khoản: <strong class="text-sale">1029384756</strong></div>
+                                        <div>Chủ tài khoản: <strong>CONG TY TNHH SNEAKER BUZZ VN</strong></div>
+                                        <div>Số tiền: <strong class="text-sale">@Model.Cart.TongCong.ToString("N0")₫</strong></div>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cột Tóm tắt đơn hàng -->
+                <div class="col-lg-5">
+                    <div class="border bg-white p-4">
+                        <div class="d-flex justify-content-between align-items-center pb-3 mb-3 border-bottom">
+                            <h6 class="fw-extrabold text-uppercase mb-0">ĐƠN HÀNG (@Model.Cart.Items.Sum(i => i.SoLuong) ĐÔI)</h6>
+                            <a asp-controller="Cart" asp-action="Index" class="small text-dark fw-bold text-decoration-underline">SỬA GIỎ HÀNG</a>
+                        </div>
+
+                        <div class="mb-3" style="max-height: 320px; overflow-y: auto;">
+                            @foreach (var item in Model.Cart.Items)
+                            {
+                                <div class="d-flex align-items-center gap-3 py-2 border-bottom">
+                                    <img src="@item.HinhAnh" alt="@item.TenSanPham" class="border bg-light-gray" style="width: 56px; height: 56px; object-fit: cover;" />
+                                    <div class="flex-grow-1">
+                                        <div class="fw-bold small text-dark">@item.TenSanPham</div>
+                                        <div class="small text-muted">Màu: @item.TenMau | Size: @item.SoKichCo | SL: x@item.SoLuong</div>
+                                    </div>
+                                    <div class="fw-bold small text-end text-nowrap">@item.ThanhTien.ToString("N0")₫</div>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-2 small">
+                            <span class="text-muted">TẠM TÍNH:</span>
+                            <span class="fw-bold">@Model.Cart.TamTinh.ToString("N0")₫</span>
+                        </div>
+
+                        @if (Model.Cart.TienGiam > 0)
+                        {
+                            <div class="d-flex justify-content-between mb-2 small text-sale">
+                                <span>MÃ GIẢM GIÁ (@Model.Cart.MaCodeKhuyenMai):</span>
+                                <span class="fw-bold">-@Model.Cart.TienGiam.ToString("N0")₫</span>
+                            </div>
+                        }
+
+                        <div class="d-flex justify-content-between mb-3 pb-3 border-bottom small">
+                            <span class="text-muted">PHÍ GIAO HÀNG:</span>
+                            <span class="fw-bold">MIỄN PHÍ (0₫)</span>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-baseline mb-4">
+                            <span class="fw-extrabold text-uppercase">TỔNG THANH TOÁN:</span>
+                            <span class="fw-black fs-4 text-sale">@Model.Cart.TongCong.ToString("N0")₫</span>
+                        </div>
+
+                        <button type="submit" class="sb-btn sb-btn-red w-100">
+                            HOÀN TẤT ĐẶT HÀNG →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function toggleBankTransferInfo() {
+            const selected = document.querySelector('input[name="PhuongThucThanhToan"]:checked')?.value;
+            const box = document.getElementById('bankTransferBox');
+            if (box) {
+                box.classList.toggle('d-none', selected !== 'Chuyển khoản');
+            }
+        }
+        document.addEventListener('DOMContentLoaded', toggleBankTransferInfo);
+    </script>
+}

@@ -1,0 +1,1794 @@
+﻿/* =========================================================================
+   SNEAKER BUZZ - HIGH-CONTRAST STREETWEAR RETAIL DESIGN SYSTEM
+   Bảng màu: #FFFFFF (Trắng), #F5F5F5/#F6F6F6 (Xám nhạt), #111111 (Đen),
+             #555555 (Xám đậm), #E51937 (Đỏ Sale & CTA)
+   Typography: Montserrat (Bold Uppercase) & Inter (Body/SKU)
+   Geometry: Sharp 0px - 2px radius, 1px solid #EAEAEA / #111111 borders
+   ========================================================================= */
+
+:root {
+    --sb-white: #ffffff;
+    --sb-gray-bg: #f5f5f5;
+    --sb-card-bg: #f6f6f6;
+    --sb-border: #eaeaea;
+    --sb-border-mid: #dcdcdc;
+    --sb-black: #111111;
+    --sb-text-sub: #555555;
+    --sb-text-muted: #888888;
+    --sb-sale: #e51937;
+    --sb-sale-hover: #c4122c;
+
+    /* Tương thích với các class Admin */
+    --clr-dark: #111111;
+    --clr-navy: #111111;
+    --clr-orange: #e51937;
+    --clr-orange-hover: #c4122c;
+    --clr-orange-soft: #fff0f2;
+    --clr-slate: #f5f5f5;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--sb-white);
+    color: var(--sb-black);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6,
+.sb-logo, .sb-nav-link, .sb-btn,
+.sb-section-title, .sb-price-current, .sb-detail-price {
+    font-family: 'Montserrat', sans-serif;
+}
+
+.fw-extrabold { font-weight: 800 !important; }
+.fw-black { font-weight: 900 !important; }
+.text-sale, .text-orange { color: var(--sb-sale) !important; }
+.text-navy { color: var(--sb-black) !important; }
+.bg-light-gray, .bg-slate { background-color: var(--sb-gray-bg) !important; }
+.bg-orange { background-color: var(--sb-sale) !important; }
+.bg-navy { background-color: var(--sb-black) !important; }
+.bg-orange-soft { background-color: #fff0f2 !important; }
+.cursor-pointer { cursor: pointer; }
+
+/* =========================================================================
+   1. TOP-BAR (Nền đen #111111, chữ trắng 12px)
+   ========================================================================= */
+.sb-topbar {
+    background-color: var(--sb-black);
+    color: var(--sb-white);
+    font-size: 12px;
+    padding: 8px 0;
+    letter-spacing: 0.3px;
+}
+
+.sb-slogan {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.sb-divider {
+    color: rgba(255, 255, 255, 0.25);
+}
+
+.sb-topbar-link {
+    color: rgba(255, 255, 255, 0.88);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.15s ease;
+}
+.sb-topbar-link:hover {
+    color: var(--sb-white);
+    text-decoration: underline;
+}
+
+.sb-topbar-cart {
+    color: var(--sb-white);
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11.5px;
+    letter-spacing: 0.4px;
+    padding: 3px 10px;
+    background-color: var(--sb-sale);
+    transition: background-color 0.2s ease;
+}
+.sb-topbar-cart:hover {
+    background-color: var(--sb-sale-hover);
+    color: var(--sb-white);
+}
+
+/* =========================================================================
+   2. MAIN HEADER & MENU 2 CẤP (CHUẨN SNEAKER BUZZ)
+   ========================================================================= */
+.sb-header {
+    border-bottom: 1px solid var(--sb-border);
+    z-index: 1030;
+}
+
+.sb-header-upper {
+    border-bottom: 1px solid var(--sb-border);
+}
+
+.sb-logo {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--sb-black);
+    letter-spacing: 1px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 2px;
+}
+.sb-logo:hover {
+    color: var(--sb-black);
+}
+.sb-logo-accent {
+    color: var(--sb-sale);
+}
+.sb-logo-sub {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--sb-text-muted);
+    letter-spacing: 1.5px;
+    margin-left: 8px;
+}
+
+.sb-mobile-toggle {
+    background: transparent;
+    border: 1px solid var(--sb-black);
+    color: var(--sb-black);
+    padding: 4px 10px;
+}
+
+/* Thanh tìm kiếm tối giản (chỉ có gạch chân dưới / viền mảnh) */
+.sb-search-box {
+    border-bottom: 2px solid var(--sb-black);
+    padding: 4px 0;
+}
+
+.sb-search-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--sb-black);
+    letter-spacing: 0.3px;
+}
+.sb-search-input::placeholder {
+    color: #999999;
+}
+
+.sb-search-btn {
+    border: none;
+    background: transparent;
+    color: var(--sb-black);
+    font-size: 15px;
+    padding: 2px 6px;
+    transition: color 0.15s ease;
+}
+.sb-search-btn:hover {
+    color: var(--sb-sale);
+}
+
+.sb-header-icon-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--sb-black);
+    text-decoration: none;
+    letter-spacing: 0.4px;
+    transition: color 0.15s ease;
+}
+.sb-header-icon-link i {
+    font-size: 17px;
+}
+.sb-header-icon-link:hover {
+    color: var(--sb-sale);
+}
+
+/* Live Search Dropdown */
+.sb-live-search {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: var(--sb-white);
+    border: 1px solid var(--sb-black);
+    z-index: 1060;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.live-search-item {
+    transition: background-color 0.15s ease;
+}
+.live-search-item:hover {
+    background-color: var(--sb-gray-bg);
+}
+
+/* Thanh Menu 2 cấp nằm ngang chữ IN HOA đậm */
+.sb-navbar {
+    background-color: var(--sb-white);
+}
+
+.sb-nav-list {
+    gap: 4px;
+}
+
+.sb-nav-item {
+    position: relative;
+}
+
+.sb-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 14px 16px;
+    font-size: 12.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--sb-black);
+    text-decoration: none;
+    position: relative;
+    transition: color 0.18s ease;
+}
+
+.sb-nav-link::after {
+    content: '';
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 0;
+    height: 2px;
+    background-color: var(--sb-black);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.22s ease;
+}
+
+.sb-nav-item:hover > .sb-nav-link,
+.sb-nav-link.active {
+    color: var(--sb-black);
+}
+
+.sb-nav-item:hover > .sb-nav-link::after,
+.sb-nav-link.active::after {
+    transform: scaleX(1);
+}
+
+.sb-nav-sale {
+    color: var(--sb-sale) !important;
+}
+.sb-nav-sale::after {
+    background-color: var(--sb-sale) !important;
+}
+
+.sb-chevron {
+    font-size: 10px;
+    transition: transform 0.2s ease;
+}
+
+/* Mega Menu / Dropdown 2 cấp khi Hover */
+.sb-dropdown {
+    background-color: var(--sb-white);
+    border: 1px solid var(--sb-black);
+    padding: 18px 20px;
+    min-width: 270px;
+    z-index: 1050;
+}
+
+.sb-mega-brand {
+    min-width: 440px;
+}
+
+.sb-dropdown-heading {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    color: var(--sb-black);
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--sb-border);
+}
+
+.sb-view-all-link {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--sb-sale);
+    text-decoration: none;
+}
+.sb-view-all-link:hover {
+    text-decoration: underline;
+}
+
+.sb-sublink {
+    display: inline-block;
+    padding: 6px 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--sb-text-sub);
+    text-decoration: none;
+    position: relative;
+    transition: color 0.15s ease, padding-left 0.15s ease;
+}
+
+.sb-sublink::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 3px;
+    width: 0;
+    height: 1.5px;
+    background-color: var(--sb-black);
+    transition: width 0.2s ease;
+}
+
+.sb-sublink:hover {
+    color: var(--sb-black);
+    font-weight: 600;
+}
+.sb-sublink:hover::after {
+    width: 100%;
+}
+
+@media (min-width: 992px) {
+    .sb-has-dropdown > .sb-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(8px);
+        transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+    }
+
+    .sb-has-dropdown:hover > .sb-dropdown {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .sb-has-dropdown:hover .sb-chevron {
+        transform: rotate(180deg);
+    }
+}
+
+/* =========================================================================
+   3. BUTTONS & GENERAL ELEMENTS (Góc vuông 0px - 2px)
+   ========================================================================= */
+.sb-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    padding: 0 28px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    text-decoration: none;
+    border-radius: 0;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sb-btn-black {
+    background-color: var(--sb-black);
+    color: var(--sb-white);
+    border-color: var(--sb-black);
+}
+.sb-btn-black:hover {
+    background-color: #333333;
+    border-color: #333333;
+    color: var(--sb-white);
+}
+
+.sb-btn-red {
+    background-color: var(--sb-sale);
+    color: var(--sb-white);
+    border-color: var(--sb-sale);
+}
+.sb-btn-red:hover {
+    background-color: var(--sb-sale-hover);
+    border-color: var(--sb-sale-hover);
+    color: var(--sb-white);
+}
+
+.sb-btn-outline-white {
+    background-color: transparent;
+    color: var(--sb-white);
+    border: 1.5px solid var(--sb-white);
+}
+.sb-btn-outline-white:hover {
+    background-color: var(--sb-white);
+    color: var(--sb-black);
+}
+
+/* =========================================================================
+   4. HERO BANNER (Tỷ lệ 16:6, nút < > vuông vức) & BRAND STRIP
+   ========================================================================= */
+.sb-hero-slide {
+    width: 100%;
+    aspect-ratio: 16 / 6;
+    min-height: 380px;
+    max-height: 600px;
+    background-size: cover;
+    background-position: center;
+}
+
+.sb-hero-caption {
+    max-width: 580px;
+    color: var(--sb-white);
+}
+
+.sb-hero-tag {
+    display: inline-block;
+    background-color: var(--sb-sale);
+    color: var(--sb-white);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    padding: 5px 12px;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+}
+
+.sb-hero-title {
+    font-size: clamp(28px, 4.2vw, 50px);
+    font-weight: 900;
+    line-height: 1.08;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+
+.sb-hero-desc {
+    font-size: 14.5px;
+    color: rgba(255, 255, 255, 0.86);
+    margin-bottom: 0;
+}
+
+.sb-carousel-control {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    background-color: rgba(17, 17, 17, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: var(--sb-white);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    transition: all 0.2s ease;
+}
+.sb-carousel-control:hover {
+    background-color: var(--sb-sale);
+    border-color: var(--sb-sale);
+}
+.sb-carousel-control.prev { left: 20px; }
+.sb-carousel-control.next { right: 20px; }
+
+/* Brand Strip Cards */
+.sb-brand-card {
+    display: block;
+    text-decoration: none;
+    color: var(--sb-black);
+    border: 1px solid var(--sb-border);
+    background-color: var(--sb-white);
+    transition: border-color 0.2s ease;
+}
+.sb-brand-card:hover {
+    border-color: var(--sb-black);
+    color: var(--sb-black);
+}
+
+.sb-brand-img-wrap {
+    aspect-ratio: 1 / 1;
+    background-color: var(--sb-card-bg);
+    overflow: hidden;
+}
+.sb-brand-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+}
+.sb-brand-card:hover .sb-brand-img-wrap img {
+    transform: scale(1.05);
+}
+
+.sb-brand-meta {
+    padding: 12px 14px;
+    border-top: 1px solid var(--sb-border);
+}
+
+.sb-brand-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13.5px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.sb-brand-count {
+    font-size: 12px;
+    color: var(--sb-text-muted);
+    margin-top: 2px;
+}
+
+/* Section Headers */
+.sb-section-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--sb-black);
+    margin-bottom: 8px;
+}
+
+.sb-section-line {
+    width: 48px;
+    height: 3px;
+    background-color: var(--sb-black);
+}
+
+.sb-section-more {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    color: var(--sb-black);
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--sb-black);
+    padding-bottom: 2px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+.sb-section-more:hover {
+    color: var(--sb-sale);
+    border-color: var(--sb-sale);
+}
+
+/* =========================================================================
+   5. PRODUCT CARD (CHUẨN SNEAKER BUZZ)
+   ========================================================================= */
+.sb-product-card {
+    background-color: var(--sb-white);
+    border: 1px solid var(--sb-border);
+    transition: border-color 0.2s ease;
+}
+
+.sb-product-card:hover {
+    border-color: var(--sb-black);
+}
+
+.sb-card-thumb {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    background-color: var(--sb-card-bg);
+    overflow: hidden;
+}
+
+.sb-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.sb-product-card:hover .sb-card-img {
+    transform: scale(1.05);
+}
+
+.sb-card-badges {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sb-badge-sale {
+    display: inline-block;
+    background-color: var(--sb-sale);
+    color: var(--sb-white);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    letter-spacing: 0.4px;
+}
+
+.sb-badge-new {
+    display: inline-block;
+    background-color: var(--sb-black);
+    color: var(--sb-white);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    letter-spacing: 0.4px;
+}
+
+/* Nút hành động nhanh ở đáy khung ảnh khi Hover */
+.sb-card-actions {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    transform: translateY(100%);
+    transition: transform 0.25s ease;
+    z-index: 3;
+}
+
+.sb-product-card:hover .sb-card-actions {
+    transform: translateY(0);
+}
+
+.sb-card-btn {
+    flex: 1;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.sb-card-btn-view {
+    background-color: rgba(17, 17, 17, 0.92);
+    color: var(--sb-white);
+}
+.sb-card-btn-view:hover {
+    background-color: var(--sb-black);
+    color: var(--sb-white);
+}
+
+.sb-card-btn-add {
+    background-color: var(--sb-sale);
+    color: var(--sb-white);
+}
+.sb-card-btn-add:hover {
+    background-color: var(--sb-sale-hover);
+    color: var(--sb-white);
+}
+
+/* Thông tin bên dưới ảnh */
+.sb-card-info {
+    padding: 12px 14px 14px;
+    text-align: left;
+}
+
+.sb-card-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.8em;
+}
+
+.sb-card-title a {
+    color: var(--sb-black);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+.sb-card-title a:hover {
+    color: var(--sb-sale);
+}
+
+.sb-card-sku {
+    font-size: 12px;
+    color: var(--sb-text-muted);
+    margin-bottom: 8px;
+}
+
+.sb-card-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.sb-price-current {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--sb-black);
+}
+
+.sb-price-current.is-sale {
+    color: var(--sb-sale);
+}
+
+.sb-price-old {
+    font-size: 12.5px;
+    color: #999999;
+    text-decoration: line-through;
+}
+
+/* Voucher & Policy Strip */
+.sb-voucher-box {
+    background-color: var(--sb-white);
+    border: 1px solid var(--sb-border-mid);
+    padding: 14px 16px;
+}
+
+.sb-voucher-code {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--sb-black);
+    letter-spacing: 0.6px;
+}
+
+.sb-voucher-pill {
+    background-color: var(--sb-white);
+    border: 1px solid var(--sb-black);
+    color: var(--sb-black);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.sb-voucher-pill:hover {
+    background-color: var(--sb-black);
+    color: var(--sb-white);
+}
+
+.sb-policy-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.sb-policy-icon {
+    font-size: 26px;
+    color: var(--sb-black);
+}
+.sb-policy-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12.5px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+}
+.sb-policy-sub {
+    font-size: 12px;
+    color: var(--sb-text-muted);
+}
+
+/* =========================================================================
+   6. DANH SÁCH SẢN PHẨM & SIDEBAR BỘ LỌC TỐI GIẢN
+   ========================================================================= */
+.sb-breadcrumb-bar {
+    background-color: var(--sb-gray-bg);
+    border-bottom: 1px solid var(--sb-border);
+}
+
+.sb-filter-box {
+    border: 1px solid var(--sb-border);
+    padding: 18px;
+    background-color: var(--sb-white);
+}
+
+.sb-filter-header {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+    border-bottom: 2px solid var(--sb-black);
+}
+
+.sb-filter-reset {
+    font-size: 11px;
+    color: var(--sb-sale);
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.sb-filter-group {
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--sb-border);
+}
+
+.sb-filter-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+    color: var(--sb-black);
+}
+
+.sb-check-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--sb-text-sub);
+}
+.sb-check-label input {
+    accent-color: var(--sb-black);
+}
+
+.sb-input {
+    border: 1px solid var(--sb-border-mid);
+    padding: 6px 10px;
+    font-size: 13px;
+    width: 100%;
+    outline: none;
+}
+.sb-input:focus {
+    border-color: var(--sb-black);
+}
+
+.sb-size-filter-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+}
+
+.sb-size-square {
+    height: 36px;
+    background-color: var(--sb-white);
+    border: 1px solid var(--sb-border-mid);
+    color: var(--sb-black);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.sb-size-square:hover {
+    border-color: var(--sb-black);
+}
+.sb-size-square.active {
+    border: 2px solid var(--sb-black);
+    background-color: var(--sb-black);
+    color: var(--sb-white);
+    font-weight: 700;
+}
+
+.sb-page-heading {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+}
+
+.sb-select {
+    border: 1px solid var(--sb-border-mid);
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    outline: none;
+    background-color: var(--sb-white);
+}
+.sb-select:focus {
+    border-color: var(--sb-black);
+}
+
+.sb-empty-state {
+    border: 1px solid var(--sb-border);
+    background-color: var(--sb-gray-bg);
+}
+
+/* =========================================================================
+   7. CHI TIẾT SẢN PHẨM (55% ẢNH TRÁI - 45% THÔNG TIN PHẢI)
+   ========================================================================= */
+@media (max-width: 991.98px) {
+    .col-lg-7[style*="55%"], .col-lg-5[style*="45%"] {
+        width: 100% !important;
+    }
+}
+
+.sb-detail-gallery {
+    background-color: var(--sb-card-bg);
+    border: 1px solid var(--sb-border);
+}
+
+.sb-detail-main-img {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+}
+
+.sb-detail-brand {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--sb-text-muted);
+    margin-bottom: 4px;
+}
+
+.sb-detail-title {
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1.25;
+    color: var(--sb-black);
+    margin-bottom: 12px;
+}
+
+.sb-detail-price {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--sb-black);
+}
+.sb-detail-price.is-sale {
+    color: var(--sb-sale);
+}
+
+.sb-detail-old-price {
+    font-size: 16px;
+    color: #999999;
+    text-decoration: line-through;
+    margin-left: 10px;
+}
+
+.sb-option-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--sb-text-sub);
+}
+
+/* Ô chọn Màu sắc & Kích cỡ: Viền mảnh, khi chọn viền chuyển sang đen đậm #111111 */
+.sb-option-box {
+    height: 40px;
+    padding: 0 14px;
+    background-color: var(--sb-white);
+    border: 1px solid var(--sb-border-mid);
+    color: var(--sb-black);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.sb-option-box:hover {
+    border-color: var(--sb-black);
+}
+.sb-option-box.active {
+    border: 2px solid var(--sb-black);
+    font-weight: 700;
+}
+
+.sb-color-square {
+    width: 16px;
+    height: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    display: inline-block;
+}
+
+.sb-size-box {
+    min-width: 50px;
+    height: 42px;
+    padding: 0 12px;
+    background-color: var(--sb-white);
+    border: 1px solid var(--sb-border-mid);
+    color: var(--sb-black);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.sb-size-box:hover:not(.disabled-variant) {
+    border-color: var(--sb-black);
+}
+.sb-size-box.active {
+    border: 2px solid var(--sb-black);
+    background-color: var(--sb-black);
+    color: var(--sb-white);
+    font-weight: 700;
+}
+.sb-size-box.disabled-variant {
+    opacity: 0.35;
+    text-decoration: line-through;
+    background-color: var(--sb-gray-bg);
+    cursor: not-allowed;
+}
+
+/* Bộ chọn số lượng vuông vức */
+.sb-qty-box {
+    border: 1px solid var(--sb-border-mid);
+    background-color: var(--sb-white);
+}
+
+.sb-qty-btn {
+    width: 38px;
+    height: 38px;
+    border: none;
+    background: transparent;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--sb-black);
+    cursor: pointer;
+}
+.sb-qty-btn:hover {
+    background-color: var(--sb-gray-bg);
+}
+
+.sb-qty-input {
+    width: 48px;
+    height: 38px;
+    border: none;
+    border-left: 1px solid var(--sb-border-mid);
+    border-right: 1px solid var(--sb-border-mid);
+    text-align: center;
+    font-weight: 700;
+    font-size: 13.5px;
+    outline: none;
+}
+
+.sb-detail-section-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+/* =========================================================================
+   8. FOOTER (Nền đen #111111, chữ trắng/xám sáng, 4 cột)
+   ========================================================================= */
+.sb-footer {
+    background-color: var(--sb-black);
+    color: #cccccc;
+}
+
+.sb-footer-logo {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--sb-white);
+    letter-spacing: 1px;
+}
+
+.sb-footer-heading {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--sb-white);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+}
+
+.sb-footer-text {
+    font-size: 13px;
+    color: #aaaaaa;
+    line-height: 1.6;
+}
+
+.sb-footer-contact li {
+    font-size: 12.5px;
+    color: #cccccc;
+    margin-bottom: 6px;
+}
+
+.sb-footer-links li {
+    margin-bottom: 8px;
+}
+.sb-footer-links a {
+    color: #aaaaaa;
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.15s ease;
+}
+.sb-footer-links a:hover {
+    color: var(--sb-white);
+    text-decoration: underline;
+}
+
+.sb-newsletter-input {
+    flex: 1;
+    height: 40px;
+    background-color: #1f1f1f;
+    border: 1px solid #333333;
+    color: var(--sb-white);
+    padding: 0 12px;
+    font-size: 12.5px;
+    outline: none;
+}
+.sb-newsletter-input:focus {
+    border-color: var(--sb-white);
+}
+
+.sb-newsletter-btn {
+    height: 40px;
+    padding: 0 18px;
+    background-color: var(--sb-sale);
+    border: none;
+    color: var(--sb-white);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.sb-social-sq {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #333333;
+    color: var(--sb-white);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+.sb-social-sq:hover {
+    background-color: var(--sb-sale);
+    border-color: var(--sb-sale);
+    color: var(--sb-white);
+}
+
+.sb-footer-bottom {
+    border-top: 1px solid #222222;
+    font-size: 11.5px;
+    color: #888888;
+    letter-spacing: 0.4px;
+}
+
+.sb-toast {
+    background-color: var(--sb-black);
+    border-left: 4px solid var(--sb-sale) !important;
+    border-radius: 0;
+}
+
+.color-dot {
+    width: 14px;
+    height: 14px;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    display: inline-block;
+}
+
+/* =========================================================================
+   9. ADMIN DASHBOARD LAYOUT (HIGH-CONTRAST STREETWEAR RETAIL)
+   ========================================================================= */
+.adm-body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #f4f4f5;
+    color: #111111;
+    font-size: 13.5px;
+}
+
+.adm-sidebar {
+    width: 270px;
+    background-color: #111111;
+    color: #ffffff;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    z-index: 1045;
+    border-right: 1px solid #222222;
+    transition: transform 0.25s ease;
+}
+
+.adm-sidebar-brand {
+    padding: 20px 20px;
+    border-bottom: 1px solid #222222;
+}
+
+.adm-logo-box {
+    width: 36px;
+    height: 36px;
+    background-color: #e51937;
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 900;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+}
+
+.adm-brand-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 0.8px;
+    line-height: 1;
+}
+
+.adm-brand-sub {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9.5px;
+    font-weight: 700;
+    color: #888888;
+    letter-spacing: 1.4px;
+    margin-top: 3px;
+}
+
+.adm-icon-btn {
+    background: transparent;
+    border: 1px solid #333333;
+    color: #ffffff;
+    width: 32px;
+    height: 32px;
+    border-radius: 2px;
+}
+
+.adm-user-panel {
+    margin: 16px 16px;
+    padding: 12px 14px;
+    background-color: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-left: 3px solid #e51937;
+    border-radius: 2px;
+}
+
+.adm-user-avatar {
+    width: 38px;
+    height: 38px;
+    background-color: #e51937;
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.adm-user-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.adm-user-role {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: #e51937;
+    letter-spacing: 0.6px;
+    margin-top: 2px;
+}
+
+.adm-nav-section {
+    padding: 8px 0;
+}
+
+.adm-nav-heading {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10.5px;
+    font-weight: 800;
+    color: #777777;
+    letter-spacing: 1.2px;
+    padding: 0 20px 8px;
+}
+
+.adm-nav-list li {
+    margin-bottom: 2px;
+}
+
+.adm-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #bbbbbb;
+    text-decoration: none;
+    border-left: 4px solid transparent;
+    transition: all 0.15s ease;
+}
+
+.adm-nav-link i {
+    font-size: 15px;
+}
+
+.adm-nav-link:hover {
+    color: #ffffff;
+    background-color: #1a1a1a;
+}
+
+.adm-nav-link.active {
+    color: #ffffff;
+    background-color: #1f1f1f;
+    border-left: 4px solid #e51937;
+}
+
+.adm-sidebar-footer {
+    padding: 16px;
+    border-top: 1px solid #222222;
+}
+
+/* Topbar & Headings */
+.adm-topbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e4e4e7;
+    padding: 14px 24px;
+    z-index: 1030;
+}
+
+.adm-page-title {
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: #111111;
+}
+
+.adm-page-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 11.5px;
+    color: #71717a;
+    margin-top: 2px;
+}
+
+.adm-section-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #111111;
+}
+
+.adm-section-sub {
+    font-size: 12.5px;
+    color: #71717a;
+}
+
+.adm-footer {
+    background-color: #ffffff;
+    border-top: 1px solid #e4e4e7;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: #71717a;
+    letter-spacing: 0.4px;
+}
+
+/* Panels & Cards (Nền trắng #FFFFFF, viền mảnh 1px solid #E4E4E7, góc 2px) */
+.adm-panel {
+    background-color: #ffffff;
+    border: 1px solid #e4e4e7;
+    border-radius: 2px;
+}
+
+.adm-panel-head {
+    padding: 16px 20px;
+    border-bottom: 1px solid #e4e4e7;
+    background-color: #fafafa;
+}
+
+.adm-panel-title {
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #111111;
+}
+
+.adm-panel-sub {
+    font-size: 12px;
+    color: #71717a;
+}
+
+/* KPI Cards (Khối vuông viền mảnh, đường nhấn trên cùng 4px, số Oswald/Montserrat lớn) */
+.adm-kpi-card {
+    background-color: #ffffff;
+    border: 1px solid #e4e4e7;
+    border-radius: 2px;
+    padding: 18px 20px;
+}
+
+.adm-kpi-card.accent-red {
+    border-top: 4px solid #e51937;
+}
+
+.adm-kpi-card.accent-black {
+    border-top: 4px solid #111111;
+}
+
+.adm-kpi-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    color: #52525b;
+    text-transform: uppercase;
+}
+
+.adm-kpi-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+}
+.adm-kpi-icon.is-red {
+    background-color: #e51937;
+    color: #ffffff;
+}
+.adm-kpi-icon.is-black {
+    background-color: #111111;
+    color: #ffffff;
+}
+
+.adm-kpi-number {
+    font-family: 'Oswald', 'Montserrat', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #111111;
+    line-height: 1.2;
+    margin-bottom: 6px;
+}
+
+.adm-kpi-foot {
+    font-size: 12px;
+    color: #71717a;
+}
+
+/* Hệ Nút bấm Admin (Góc vuông 2px, chữ IN HOA đậm) */
+.adm-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    padding: 0 18px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 2px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.adm-btn-sm {
+    height: 32px;
+    padding: 0 12px;
+    font-size: 11px;
+}
+
+.adm-btn-red {
+    background-color: #e51937;
+    color: #ffffff;
+    border-color: #e51937;
+}
+.adm-btn-red:hover {
+    background-color: #c4122c;
+    border-color: #c4122c;
+    color: #ffffff;
+}
+
+.adm-btn-black {
+    background-color: #111111;
+    color: #ffffff;
+    border-color: #111111;
+}
+.adm-btn-black:hover {
+    background-color: #27272a;
+    border-color: #27272a;
+    color: #ffffff;
+}
+
+.adm-btn-outline {
+    background-color: #ffffff;
+    color: #111111;
+    border-color: #111111;
+}
+.adm-btn-outline:hover {
+    background-color: #111111;
+    color: #ffffff;
+}
+
+.adm-btn-outline-light {
+    background-color: transparent;
+    color: #ffffff;
+    border-color: #3f3f46;
+}
+.adm-btn-outline-light:hover {
+    background-color: #ffffff;
+    color: #111111;
+    border-color: #ffffff;
+}
+
+/* Nút thao tác trong bảng (Sửa / Xóa) */
+.adm-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 30px;
+    padding: 0 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.adm-action-edit {
+    background-color: #ffffff;
+    color: #111111;
+    border: 1px solid #111111;
+}
+.adm-action-edit:hover {
+    background-color: #111111;
+    color: #ffffff;
+}
+
+.adm-action-delete {
+    background-color: #ffffff;
+    color: #52525b;
+    border: 1px solid #d4d4d8;
+}
+.adm-action-delete:hover {
+    background-color: #e51937;
+    color: #ffffff;
+    border-color: #e51937;
+}
+
+/* Hệ Badge tối giản (Đen / Đỏ / Xám viền mảnh, góc 2px) */
+.adm-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    border-radius: 2px;
+    line-height: 1.3;
+}
+
+.adm-badge-black {
+    background-color: #111111;
+    color: #ffffff;
+}
+
+.adm-badge-red {
+    background-color: #e51937;
+    color: #ffffff;
+}
+
+.adm-badge-gray {
+    background-color: #f4f4f5;
+    color: #111111;
+    border: 1px solid #d4d4d8;
+}
+
+.adm-badge-outline {
+    background-color: #ffffff;
+    color: #111111;
+    border: 1px solid #111111;
+}
+
+/* Bảng dữ liệu (THEAD nền đen #111111 chữ trắng IN HOA) */
+.adm-table {
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+}
+
+.adm-table thead th {
+    background-color: #111111 !important;
+    color: #ffffff !important;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    padding: 12px 14px;
+    border-bottom: none;
+    white-space: nowrap;
+}
+
+.adm-table tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #e4e4e7;
+    color: #18181b;
+}
+
+.adm-table tbody tr:hover {
+    background-color: #f8f8f9;
+}
+
+/* Phân cấp Cha / Con ở bảng Danh mục */
+.adm-row-parent {
+    background-color: #fafafa;
+}
+
+.adm-cat-parent-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    color: #111111;
+    letter-spacing: 0.3px;
+}
+
+.adm-cat-child-name {
+    padding-left: 24px;
+    font-weight: 600;
+    color: #3f3f46;
+}
+
+.adm-child-arrow {
+    color: #e51937;
+    font-weight: 800;
+    margin-right: 6px;
+}
+
+/* Thumbnail sản phẩm vuông 50x50px nền #F5F5F5 viền mảnh */
+.adm-thumb-50 {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    background-color: #f5f5f5;
+    border: 1px solid #e4e4e7;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+/* Inputs, Selects & Custom Radio/Checkbox vuông sắc nét */
+.adm-label {
+    display: block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: #111111;
+    margin-bottom: 6px;
+}
+
+.adm-input, .adm-select, .adm-textarea {
+    width: 100%;
+    background-color: #ffffff;
+    border: 1px solid #d4d4d8;
+    border-radius: 2px;
+    padding: 8px 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    color: #111111;
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+
+.adm-input:focus, .adm-select:focus, .adm-textarea:focus {
+    border-color: #111111;
+}
+
+.adm-select-sm {
+    padding: 5px 8px;
+    font-size: 12px;
+}
+
+.adm-field-box {
+    background-color: #fafafa;
+    border: 1px solid #e4e4e7;
+    border-radius: 2px;
+    padding: 14px 16px;
+}
+
+/* Custom Radio & Checkbox dạng ô vuông sắc nét */
+.adm-choice-tile {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    margin: 0;
+}
+
+.adm-choice-tile input[type="radio"],
+.adm-choice-tile input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.adm-choice-tile > span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    padding: 0 14px;
+    background-color: #ffffff;
+    border: 1px solid #d4d4d8;
+    border-radius: 2px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    color: #3f3f46;
+    transition: all 0.15s ease;
+}
+
+.adm-choice-tile:hover > span {
+    border-color: #111111;
+    color: #111111;
+}
+
+.adm-choice-tile input:checked + span {
+    background-color: #111111;
+    border: 2px solid #111111;
+    color: #ffffff;
+}
+
+.adm-choice-tile.is-danger input:checked + span {
+    background-color: #e51937;
+    border: 2px solid #e51937;
+    color: #ffffff;
+}
+
+.adm-size-tile > span {
+    min-width: 76px;
+}
+
+@media (max-width: 991.98px) {
+    .adm-sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        transform: translateX(-100%);
+    }
+
+    .adm-sidebar.show {
+        transform: translateX(0);
+    }
+}

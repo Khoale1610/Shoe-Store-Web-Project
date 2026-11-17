@@ -1,0 +1,111 @@
+﻿@model List<DanhMuc>
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var currentMaDanhMuc = Context.Request.Query["maDanhMuc"].ToString();
+    var currentNhan = Context.Request.Query["nhanNoiBat"].ToString();
+    var currentBrand = Context.Request.Query["thuongHieu"].ToString();
+}
+
+<ul class="sb-nav-list list-unstyled d-flex flex-column flex-lg-row align-items-lg-center mb-0">
+    <!-- HOME -->
+    <li class="sb-nav-item">
+        <a class="sb-nav-link @(currentController == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">
+            HOME
+        </a>
+    </li>
+
+    <!-- BRAND / THƯƠNG HIỆU (Menu 2 cấp) -->
+    <li class="sb-nav-item sb-has-dropdown">
+        <a class="sb-nav-link @(!string.IsNullOrEmpty(currentBrand) ? "active" : "")" asp-controller="Product" asp-action="Index">
+            BRAND / THƯƠNG HIỆU <i class="bi bi-chevron-down sb-chevron"></i>
+        </a>
+        <div class="sb-dropdown sb-mega-brand">
+            <div class="row g-3">
+                <div class="col-6">
+                    <div class="sb-dropdown-heading">THƯƠNG HIỆU THỂ THAO</div>
+                    <ul class="list-unstyled mb-0">
+                        <li><a class="sb-sublink" asp-controller="Product" asp-action="Index" asp-route-thuongHieu="Nike">NIKE</a></li>
+                        <li><a class="sb-sublink" asp-controller="Product" asp-action="Index" asp-route-thuongHieu="Adidas">ADIDAS</a></li>
+                        <li><a class="sb-sublink" asp-controller="Product" asp-action="Index" asp-route-thuongHieu="Jordan">AIR JORDAN</a></li>
+                        <li><a class="sb-sublink" asp-controller="Product" asp-action="Index" asp-route-thuongHieu="Asics">ASICS</a></li>
+                        <li><a class="sb-sublink" asp-controller="Product" asp-action="Index" asp-route-thuongHieu="Puma">PUMA</a></li>
+                    </ul>
+                </div>
+                <div class="col-6">
+                    <div class="sb-dropdown-heading">LIFESTYLE & CASUAL</div>
+                    <ul class="list-unstyled mb-0">
+                        <li><a class="sb-sublink" asp-controller="Product" asp-action="Index" asp-route-thuongHieu="Converse">CONVERSE</a></li>
+                        <li><a class="sb-sublink" asp-controller="Product" asp-action="Index" asp-route-thuongHieu="New Balance">NEW BALANCE</a></li>
+                        <li><a class="sb-sublink" asp-controller="Product" asp-action="Index" asp-route-thuongHieu="Clarks">CLARKS</a></li>
+                        <li><a class="sb-sublink" asp-controller="Product" asp-action="Index" asp-route-thuongHieu="Cole Haan">COLE HAAN</a></li>
+                        <li><a class="sb-sublink fw-bold text-sale" asp-controller="Product" asp-action="Index">TẤT CẢ THƯƠNG HIỆU →</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </li>
+
+    <!-- DANH MỤC 2 CẤP ĐỘNG TỪ DATABASE (Danh mục Cha -> Danh mục Con khi Hover) -->
+    @foreach (var cha in Model)
+    {
+        var hasChildren = cha.DanhMucCons != null && cha.DanhMucCons.Any();
+        bool isActive = currentMaDanhMuc == cha.MaDanhMuc.ToString() ||
+                        (hasChildren && cha.DanhMucCons!.Any(c => c.MaDanhMuc.ToString() == currentMaDanhMuc));
+
+        <li class="sb-nav-item @(hasChildren ? "sb-has-dropdown" : "")">
+            <a class="sb-nav-link @(isActive ? "active" : "")"
+               asp-controller="Product"
+               asp-action="Index"
+               asp-route-maDanhMuc="@cha.MaDanhMuc">
+                @cha.TenDanhMuc.ToUpper()
+                @if (hasChildren)
+                {
+                    <i class="bi bi-chevron-down sb-chevron"></i>
+                }
+            </a>
+
+            @if (hasChildren)
+            {
+                <div class="sb-dropdown">
+                    <div class="sb-dropdown-heading d-flex justify-content-between align-items-center">
+                        <span>@cha.TenDanhMuc.ToUpper()</span>
+                        <a asp-controller="Product" asp-action="Index" asp-route-maDanhMuc="@cha.MaDanhMuc" class="sb-view-all-link">XEM TẤT CẢ →</a>
+                    </div>
+                    <ul class="list-unstyled mb-0">
+                        @foreach (var con in cha.DanhMucCons!.OrderBy(c => c.MaDanhMuc))
+                        {
+                            <li>
+                                <a class="sb-sublink"
+                                   asp-controller="Product"
+                                   asp-action="Index"
+                                   asp-route-maDanhMuc="@con.MaDanhMuc">
+                                    <span>@con.TenDanhMuc</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+        </li>
+    }
+
+    <!-- NEW ARRIVAL -->
+    <li class="sb-nav-item">
+        <a class="sb-nav-link @(currentNhan == "Moi" ? "active" : "")"
+           asp-controller="Product"
+           asp-action="Index"
+           asp-route-nhanNoiBat="Moi">
+            NEW ARRIVAL
+        </a>
+    </li>
+
+    <!-- SPECIAL PRICE -->
+    <li class="sb-nav-item">
+        <a class="sb-nav-link sb-nav-sale @(currentNhan == "GiamGia" ? "active" : "")"
+           asp-controller="Product"
+           asp-action="Index"
+           asp-route-nhanNoiBat="GiamGia">
+            SPECIAL PRICE
+        </a>
+    </li>
+</ul>

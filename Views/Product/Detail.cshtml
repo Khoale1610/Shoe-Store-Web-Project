@@ -1,0 +1,264 @@
+﻿@model ProductDetailViewModel
+@{
+    var sp = Model.SanPham;
+    ViewData["Title"] = sp.TenSanPham;
+    var firstVariant = Model.BienTheJson.FirstOrDefault(v => v.SoLuongTon > 0) ?? Model.BienTheJson.FirstOrDefault();
+    var serializedVariants = System.Text.Json.JsonSerializer.Serialize(Model.BienTheJson);
+    int discountPercent = sp.PhanTramGiamGia;
+}
+
+<!-- Breadcrumb tối giản -->
+<div class="sb-breadcrumb-bar">
+    <div class="container py-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 small text-uppercase">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-decoration-none text-muted">HOME</a></li>
+                <li class="breadcrumb-item"><a asp-controller="Product" asp-action="Index" class="text-decoration-none text-muted">SẢN PHẨM</a></li>
+                @if (sp.DanhMuc?.DanhMucCha != null)
+                {
+                    <li class="breadcrumb-item">
+                        <a asp-controller="Product" asp-action="Index" asp-route-maDanhMuc="@sp.DanhMuc.DanhMucCha.MaDanhMuc" class="text-decoration-none text-muted">
+                            @sp.DanhMuc.DanhMucCha.TenDanhMuc
+                        </a>
+                    </li>
+                }
+                @if (sp.DanhMuc != null)
+                {
+                    <li class="breadcrumb-item">
+                        <a asp-controller="Product" asp-action="Index" asp-route-maDanhMuc="@sp.DanhMuc.MaDanhMuc" class="text-decoration-none text-muted">
+                            @sp.DanhMuc.TenDanhMuc
+                        </a>
+                    </li>
+                }
+                <li class="breadcrumb-item active fw-bold text-dark" aria-current="page">@sp.TenSanPham</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- CHI TIẾT SẢN PHẨM: CHIA 2 CỘT TỶ LỆ 55% (ẢNH LỚN BÊN TRÁI) - 45% (THÔNG TIN BÊN PHẢI) -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4 g-lg-5">
+            <!-- Cột Trái 55%: Khung ảnh lớn vuông vức nền #F6F6F6 -->
+            <div class="col-lg-7" style="flex: 0 0 auto; width: 55%;">
+                <div class="sb-detail-gallery position-relative">
+                    @if (discountPercent > 0)
+                    {
+                        <span class="sb-badge-sale position-absolute top-0 start-0 m-3 z-2">- @discountPercent%</span>
+                    }
+                    <img src="@sp.HinhAnh"
+                         alt="@sp.TenSanPham"
+                         id="mainProductImage"
+                         class="sb-detail-main-img w-100"
+                         onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1000&q=80';" />
+                </div>
+
+                <!-- Mô tả & Thông số kỹ thuật bên dưới ảnh -->
+                <div class="sb-detail-tabs mt-4 pt-4 border-top">
+                    <h6 class="sb-detail-section-label">MÔ TẢ SẢN PHẨM</h6>
+                    <p class="text-secondary lh-lg mb-4">@sp.MoTa</p>
+
+                    <h6 class="sb-detail-section-label">THÔNG SỐ BỔ SUNG</h6>
+                    <table class="table table-bordered sb-spec-table small mb-0">
+                        <tbody>
+                            <tr>
+                                <th class="bg-light-gray" style="width: 35%;">THƯƠNG HIỆU</th>
+                                <td class="fw-bold text-uppercase">@(sp.ThuongHieu ?? "STRIDELAB")</td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light-gray">DANH MỤC</th>
+                                <td>@(sp.DanhMuc?.TenDanhMuc)</td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light-gray">GIỚI TÍNH</th>
+                                <td>@sp.GioiTinh</td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light-gray">CHÍNH SÁCH</th>
+                                <td>Cam kết 100% Chính hãng • Đổi Size miễn phí trong 30 ngày</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Cột Phải 45%: Thông tin, Chọn Màu/Size ô vuông viền đen, Nút THÊM VÀO GIỎ & MUA NGAY 48px -->
+            <div class="col-lg-5" style="flex: 0 0 auto; width: 45%;">
+                <div class="sb-detail-info">
+                    <div class="sb-detail-brand">@(sp.ThuongHieu ?? "SNEAKER BUZZ")</div>
+                    <h1 class="sb-detail-title">@sp.TenSanPham</h1>
+
+                    <div class="d-flex flex-wrap align-items-center gap-3 pb-3 mb-3 border-bottom small">
+                        <span class="text-muted">SKU: <strong id="detailSku" class="text-dark">@(firstVariant?.MaSKU ?? $"SB-{sp.MaSanPham:D4}")</strong></span>
+                        <span class="text-muted">|</span>
+                        <div id="detailStockBadge" class="d-inline-block">
+                            @if ((firstVariant?.SoLuongTon ?? 0) > 0)
+                            {
+                                <span class="text-dark fw-semibold">Tình trạng: <strong class="text-success">Còn hàng (@firstVariant!.SoLuongTon đôi)</strong></span>
+                            }
+                            else
+                            {
+                                <span class="text-danger fw-bold">Tạm hết hàng</span>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Giá tiền: Đỏ #E51937 nếu giảm giá + Giá gốc gạch ngang kế bên -->
+                    <div class="sb-detail-price-box mb-4">
+                        <span id="detailPrice" class="sb-detail-price @((firstVariant?.GiaBan ?? sp.GiaGoc) < sp.GiaGoc ? "is-sale" : "")">
+                            @((firstVariant?.GiaBan ?? sp.GiaGoc).ToString("N0"))₫
+                        </span>
+                        @if ((firstVariant?.GiaBan ?? sp.GiaGoc) < sp.GiaGoc)
+                        {
+                            <span class="sb-detail-old-price">@sp.GiaGoc.ToString("N0")₫</span>
+                        }
+                    </div>
+
+                    <!-- 1. BẢNG CHỌN MÀU SẮC (Ô vuông viền mảnh, khi chọn viền đen đậm #111111) -->
+                    <div class="mb-4">
+                        <div class="sb-option-label mb-2">
+                            MÀU SẮC: <strong id="selectedColorName" class="text-dark">@(firstVariant?.TenMau)</strong>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2" id="colorSelectorGroup">
+                            @foreach (var mau in Model.DanhSachMau)
+                            {
+                                bool isSelected = firstVariant != null && firstVariant.MaMau == mau.MaMau;
+                                <button type="button"
+                                        class="variant-color-btn sb-option-box d-inline-flex align-items-center gap-2 @(isSelected ? "active" : "")"
+                                        data-color-id="@mau.MaMau"
+                                        data-color-name="@mau.TenMau">
+                                    <span class="sb-color-square" style="background-color: @(mau.MaHex ?? "#111111");"></span>
+                                    <span>@mau.TenMau</span>
+                                </button>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- 2. BẢNG CHỌN KÍCH CỠ SIZE GIÀY (Ô vuông viền mảnh, khi chọn viền đen đậm #111111) -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="sb-option-label">
+                                KÍCH CỠ (SIZE): <strong id="selectedSizeName" class="text-dark">@(firstVariant?.SoKichCo)</strong>
+                            </span>
+                            <a href="#sizeGuideModal" data-bs-toggle="modal" class="small text-dark text-decoration-underline fw-semibold">
+                                Bảng quy đổi Size
+                            </a>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2" id="sizeSelectorGroup">
+                            @foreach (var size in Model.DanhSachKichCo)
+                            {
+                                bool isSelected = firstVariant != null && firstVariant.MaKichCo == size.MaKichCo;
+                                <button type="button"
+                                        class="variant-size-btn sb-size-box @(isSelected ? "active" : "")"
+                                        data-size-id="@size.MaKichCo"
+                                        data-size-name="@size.SoKichCo">
+                                    @size.SoKichCo
+                                </button>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- 3. SỐ LƯỢNG -->
+                    <input type="hidden" id="selectedVariantId" value="@(firstVariant?.MaBienThe ?? 0)" />
+
+                    <div class="mb-4">
+                        <div class="sb-option-label mb-2">SỐ LƯỢNG:</div>
+                        <div class="sb-qty-box d-inline-flex align-items-center">
+                            <button type="button" class="sb-qty-btn" id="btnQtyMinus">−</button>
+                            <input type="number" id="detailQuantity" class="sb-qty-input" value="1" min="1" max="@(firstVariant?.SoLuongTon ?? 1)" />
+                            <button type="button" class="sb-qty-btn" id="btnQtyPlus">+</button>
+                        </div>
+                    </div>
+
+                    <!-- 4. NÚT THÊM VÀO GIỎ (Đen #111111) & MUA NGAY (Đỏ #E51937) CAO 48PX -->
+                    <div class="row g-2 mb-4">
+                        <div class="col-sm-6">
+                            <button type="button" id="btnAddToCartDetail" class="sb-btn sb-btn-black w-100">
+                                THÊM VÀO GIỎ
+                            </button>
+                        </div>
+                        <div class="col-sm-6">
+                            <button type="button" id="btnBuyNowDetail" class="sb-btn sb-btn-red w-100">
+                                MUA NGAY
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Cam kết mua hàng -->
+                    <div class="sb-detail-guarantees p-3 border bg-light-gray small">
+                        <div class="py-1"><i class="bi bi-check2 me-2 fw-bold"></i>Cam kết <strong>100% Chính hãng</strong> (Phát hiện giả đền gấp 10)</div>
+                        <div class="py-1"><i class="bi bi-check2 me-2 fw-bold"></i>Hỗ trợ <strong>Đổi Size trong 30 ngày</strong> trên toàn hệ thống</div>
+                        <div class="py-1"><i class="bi bi-check2 me-2 fw-bold"></i>Miễn phí vận chuyển toàn quốc — Kiểm hàng trước khi thanh toán</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SẢN PHẨM LIÊN QUAN (CÙNG DANH MỤC) - GRID 4 CỘT -->
+        @if (Model.SanPhamLienQuan.Any())
+        {
+            <div class="mt-5 pt-5 border-top">
+                <div class="sb-section-header d-flex justify-content-between align-items-end mb-4">
+                    <div>
+                        <h3 class="sb-section-title">SẢN PHẨM LIÊN QUAN</h3>
+                        <div class="sb-section-line"></div>
+                    </div>
+                    <a asp-controller="Product" asp-action="Index" asp-route-maDanhMuc="@sp.MaDanhMuc" class="sb-section-more">
+                        XEM TẤT CẢ →
+                    </a>
+                </div>
+
+                <div class="row g-3 g-md-4">
+                    @foreach (var related in Model.SanPhamLienQuan)
+                    {
+                        <div class="col-6 col-md-4 col-lg-3">
+                            <partial name="_ProductCard" model="related" />
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- Modal Bảng quy đổi Size giày -->
+<div class="modal fade" id="sizeGuideModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-0 border-dark">
+            <div class="modal-header bg-black text-white rounded-0">
+                <h6 class="modal-title fw-bold text-uppercase mb-0">BẢNG QUY ĐỔI KÍCH CỠ GIÀY (SIZE CHART)</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <table class="table table-bordered text-center align-middle mb-0 small">
+                    <thead class="table-light">
+                        <tr>
+                            <th>SIZE EU</th>
+                            <th>SIZE US</th>
+                            <th>SIZE UK</th>
+                            <th>CHIỀU DÀI CHÂN (CM)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="fw-bold">36</td><td>5.5</td><td>3.5</td><td>22.5 cm</td></tr>
+                        <tr><td class="fw-bold">37</td><td>6.0</td><td>4.0</td><td>23.0 cm</td></tr>
+                        <tr><td class="fw-bold">38</td><td>6.5</td><td>5.0</td><td>24.0 cm</td></tr>
+                        <tr><td class="fw-bold">39</td><td>7.0</td><td>6.0</td><td>24.5 cm</td></tr>
+                        <tr><td class="fw-bold">40</td><td>7.5</td><td>6.5</td><td>25.0 cm</td></tr>
+                        <tr><td class="fw-bold">41</td><td>8.0</td><td>7.0</td><td>26.0 cm</td></tr>
+                        <tr><td class="fw-bold">42</td><td>8.5</td><td>7.5</td><td>26.5 cm</td></tr>
+                        <tr><td class="fw-bold">43</td><td>9.5</td><td>8.5</td><td>27.5 cm</td></tr>
+                        <tr><td class="fw-bold">44</td><td>10.0</td><td>9.0</td><td>28.0 cm</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        window.PRODUCT_VARIANTS = @Html.Raw(serializedVariants);
+    </script>
+}

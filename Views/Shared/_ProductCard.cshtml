@@ -1,0 +1,74 @@
+﻿@model SanPham
+@{
+    var firstVariant = Model.BienTheSanPhams?.OrderBy(b => b.GiaBan).FirstOrDefault();
+    string skuCode = firstVariant?.MaSKU ?? $"SB-{Model.MaSanPham:D4}";
+    bool isNew = Model.NhanNoiBat != null && Model.NhanNoiBat.Contains("Moi");
+    int discountPercent = Model.PhanTramGiamGia;
+    bool hasDiscount = discountPercent > 0 || Model.GiaThapNhat < Model.GiaGoc;
+}
+
+<article class="sb-product-card h-100 d-flex flex-column">
+    <!-- Khung ảnh tỷ lệ vuông 1/1, nền xám nhạt #F6F6F6 -->
+    <div class="sb-card-thumb">
+        <!-- Badge góc trên bên trái -->
+        <div class="sb-card-badges">
+            @if (discountPercent > 0)
+            {
+                <span class="sb-badge-sale">- @discountPercent%</span>
+            }
+            else if (isNew)
+            {
+                <span class="sb-badge-new">NEW</span>
+            }
+        </div>
+
+        <a asp-controller="Product" asp-action="Detail" asp-route-id="@Model.MaSanPham" class="d-block w-100 h-100">
+            <img src="@Model.HinhAnh"
+                 alt="@Model.TenSanPham"
+                 class="sb-card-img"
+                 loading="lazy"
+                 onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80';" />
+        </a>
+
+        <!-- Thanh nút hành động nhanh ở đáy khung ảnh khi Hover -->
+        <div class="sb-card-actions">
+            <a asp-controller="Product"
+               asp-action="Detail"
+               asp-route-id="@Model.MaSanPham"
+               class="sb-card-btn sb-card-btn-view">
+                XEM CHI TIẾT
+            </a>
+            @if (Model.TongTonKho > 0)
+            {
+                <button type="button"
+                        class="sb-card-btn sb-card-btn-add btn-quick-add"
+                        data-product-id="@Model.MaSanPham">
+                    THÊM NHANH
+                </button>
+            }
+        </div>
+    </div>
+
+    <!-- Thông tin bên dưới ảnh (Căn trái, gọn gàng, sắc nét) -->
+    <div class="sb-card-info d-flex flex-column flex-grow-1">
+        <h3 class="sb-card-title">
+            <a asp-controller="Product" asp-action="Detail" asp-route-id="@Model.MaSanPham">
+                @Model.TenSanPham
+            </a>
+        </h3>
+
+        <div class="sb-card-sku">
+            SKU: @skuCode
+        </div>
+
+        <div class="sb-card-price-row mt-auto">
+            <span class="sb-price-current @(hasDiscount ? "is-sale" : "")">
+                @Model.GiaThapNhat.ToString("N0")₫
+            </span>
+            @if (Model.GiaThapNhat < Model.GiaGoc)
+            {
+                <span class="sb-price-old">@Model.GiaGoc.ToString("N0")₫</span>
+            }
+        </div>
+    </div>
+</article>

@@ -1,0 +1,390 @@
+﻿@model AdminDashboardViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "THỐNG KÊ DOANH THU & TỔNG QUAN";
+    var jsonLabelsDay = System.Text.Json.JsonSerializer.Serialize(Model.NhanNgay);
+    var jsonDataDay = System.Text.Json.JsonSerializer.Serialize(Model.DoanhThuTheoNgay);
+    var jsonLabelsMonth = System.Text.Json.JsonSerializer.Serialize(Model.NhanThang);
+    var jsonDataMonth = System.Text.Json.JsonSerializer.Serialize(Model.DoanhThuTheoThang);
+}
+
+<!-- 1. CÁC THẺ KPI KHỐI VUÔNG VIỀN MẢNH, ĐƯỜNG NHẤN ĐỎ #E51937 / ĐEN #111111 -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="adm-kpi-card accent-red h-100">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <span class="adm-kpi-label">TỔNG DOANH THU</span>
+                <span class="adm-kpi-icon is-red"><i class="bi bi-currency-dollar"></i></span>
+            </div>
+            <div class="adm-kpi-number text-sale">@Model.TongDoanhThu.ToString("N0")₫</div>
+            <div class="adm-kpi-foot">
+                ĐÃ HOÀN THÀNH: <strong>@Model.DoanhThuHoanThanh.ToString("N0")₫</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="adm-kpi-card accent-black h-100">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <span class="adm-kpi-label">TỔNG ĐƠN HÀNG</span>
+                <span class="adm-kpi-icon is-black"><i class="bi bi-receipt"></i></span>
+            </div>
+            <div class="adm-kpi-number">@Model.TongDonHang ĐƠN</div>
+            <div class="d-flex flex-wrap gap-1 mt-2">
+                <span class="adm-badge adm-badge-gray">CHỜ DUYỆT: @Model.DonChoXacNhan</span>
+                <span class="adm-badge adm-badge-black">ĐANG GIAO: @Model.DonDangGiao</span>
+                <span class="adm-badge adm-badge-red">XONG: @Model.DonHoanThanh</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="adm-kpi-card accent-red h-100">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <span class="adm-kpi-label">SẮP HẾT HÀNG</span>
+                <span class="adm-kpi-icon is-red"><i class="bi bi-exclamation-triangle-fill"></i></span>
+            </div>
+            <div class="adm-kpi-number text-sale">@Model.SoBienTheSapHetHang SKU</div>
+            <div class="adm-kpi-foot">
+                CÁC BIẾN THỂ TỒN KHO <strong>≤ 8 ĐÔI</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="adm-kpi-card accent-black h-100">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <span class="adm-kpi-label">QUY MÔ HỆ THỐNG</span>
+                <span class="adm-kpi-icon is-black"><i class="bi bi-box-seam-fill"></i></span>
+            </div>
+            <div class="adm-kpi-number">@Model.TongSanPham MẪU GIÀY</div>
+            <div class="adm-kpi-foot">
+                KHÁCH HÀNG THÀNH VIÊN: <strong>@Model.TongKhachHang</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 2. BIỂU ĐỒ CHART.JS (TÔNG MÀU ĐEN #111111 & ĐỎ #E51937) -->
+<div class="row g-3 mb-4">
+    <div class="col-xl-8">
+        <div class="adm-panel h-100">
+            <div class="adm-panel-head d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div>
+                    <h2 class="adm-panel-title mb-0">BIỂU ĐỒ THỐNG KÊ DOANH THU (@DateTime.Now.Year)</h2>
+                    <span class="adm-panel-sub">Đơn vị tính: VNĐ — Chỉ tính các đơn hàng hợp lệ</span>
+                </div>
+                <div class="d-flex gap-1">
+                    <button type="button" class="adm-btn adm-btn-red adm-btn-sm" id="btnChartMonth" onclick="switchRevenueChart('month')">
+                        THEO 12 THÁNG
+                    </button>
+                    <button type="button" class="adm-btn adm-btn-outline adm-btn-sm" id="btnChartDay" onclick="switchRevenueChart('day')">
+                        7 NGÀY GẦN NHẤT
+                    </button>
+                </div>
+            </div>
+            <div class="p-4" style="height: 330px;">
+                <canvas id="revenueChartCanvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4">
+        <div class="adm-panel h-100">
+            <div class="adm-panel-head">
+                <h2 class="adm-panel-title mb-0">TỶ LỆ TRẠNG THÁI ĐƠN HÀNG</h2>
+                <span class="adm-panel-sub">Tổng cộng @Model.TongDonHang đơn hàng trên hệ thống</span>
+            </div>
+            <div class="p-4 d-flex align-items-center justify-content-center" style="height: 310px;">
+                <canvas id="orderStatusChartCanvas"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 3. TOP SẢN PHẨM BÁN CHẠY NHẤT & BIẾN THỂ SẮP HẾT HÀNG -->
+<div class="row g-3 mb-4">
+    <!-- Top sản phẩm bán chạy -->
+    <div class="col-xl-7">
+        <div class="adm-panel h-100">
+            <div class="adm-panel-head d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="adm-panel-title mb-0">TOP SẢN PHẨM BÁN CHẠY NHẤT</h2>
+                    <span class="adm-panel-sub">Xếp hạng theo số lượng bán ra & tổng doanh thu</span>
+                </div>
+                <a asp-controller="Admin" asp-action="Products" class="adm-btn adm-btn-outline adm-btn-sm">QUẢN LÝ SẢN PHẨM →</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table adm-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width: 65px;">HẠNG</th>
+                            <th>SẢN PHẨM</th>
+                            <th class="text-center">ĐÃ BÁN</th>
+                            <th class="text-end">DOANH THU</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.TopSanPhamBanChay.Any())
+                        {
+                            int rank = 1;
+                            foreach (var top in Model.TopSanPhamBanChay)
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="adm-badge @(rank == 1 ? "adm-badge-red" : "adm-badge-black")">
+                                            #@rank
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <img src="@top.HinhAnh" alt="@top.TenSanPham" class="adm-thumb-50" />
+                                            <div>
+                                                <div class="fw-bold text-dark">@top.TenSanPham</div>
+                                                <div class="small text-muted text-uppercase" style="font-size: 11px;">@top.ThuongHieu • @top.TenDanhMuc</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="adm-badge adm-badge-gray">@top.TongSoLuongBan ĐÔI</span>
+                                    </td>
+                                    <td class="text-end fw-extrabold text-sale">@top.TongDoanhThu.ToString("N0")₫</td>
+                                </tr>
+                                rank++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center py-4 text-muted">Chưa có dữ liệu bán hàng.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cảnh báo biến thể sắp hết hàng -->
+    <div class="col-xl-5">
+        <div class="adm-panel h-100">
+            <div class="adm-panel-head">
+                <h2 class="adm-panel-title mb-0">CẢNH BÁO SẮP HẾT HÀNG</h2>
+                <span class="adm-panel-sub">Các biến thể có tồn kho thấp cần nhập bổ sung</span>
+            </div>
+            <div class="table-responsive">
+                <table class="table adm-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>SẢN PHẨM / PHÂN LOẠI</th>
+                            <th class="text-center">TỒN KHO</th>
+                            <th class="text-end">THAO TÁC</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var bt in Model.BienTheSapHetHang)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="fw-bold text-dark small">@(bt.SanPham?.TenSanPham)</div>
+                                    <div class="text-muted" style="font-size: 11.5px;">
+                                        Màu: <strong>@(bt.MauSac?.TenMau)</strong> | Size: <strong>@(bt.KichCo?.SoKichCo)</strong> | @bt.MaSKU
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    @if (bt.SoLuongTon == 0)
+                                    {
+                                        <span class="adm-badge adm-badge-red">HẾT HÀNG (0)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="adm-badge adm-badge-gray">CÒN @bt.SoLuongTon</span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    <a asp-controller="Admin" asp-action="EditProduct" asp-route-id="@bt.MaSanPham" class="adm-action-btn adm-action-edit">
+                                        <i class="bi bi-pencil-square"></i> NHẬP KHO
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 4. ĐƠN HÀNG MỚI NHẤT -->
+<div class="adm-panel">
+    <div class="adm-panel-head d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="adm-panel-title mb-0">ĐƠN HÀNG GẦN ĐÂY</h2>
+            <span class="adm-panel-sub">8 đơn đặt hàng mới nhất từ khách hàng</span>
+        </div>
+        <a asp-controller="Admin" asp-action="Orders" class="adm-btn adm-btn-red adm-btn-sm">
+            XEM TẤT CẢ ĐƠN HÀNG →
+        </a>
+    </div>
+    <div class="table-responsive">
+        <table class="table adm-table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>MÃ HĐ</th>
+                    <th>NGƯỜI NHẬN</th>
+                    <th>SỐ ĐIỆN THOẠI</th>
+                    <th>THANH TOÁN</th>
+                    <th>TỔNG TIỀN</th>
+                    <th>TRẠNG THÁI</th>
+                    <th>NGÀY LẬP</th>
+                    <th class="text-end">THAO TÁC</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var hd in Model.DonHangMoiNhat)
+                {
+                    <tr>
+                        <td class="fw-extrabold">#@hd.MaHoaDon</td>
+                        <td class="fw-bold">@hd.TenNguoiNhan</td>
+                        <td>@hd.SDTNguoiNhan</td>
+                        <td><span class="adm-badge adm-badge-gray">@hd.PhuongThucThanhToan.ToUpper()</span></td>
+                        <td class="fw-extrabold text-sale">@hd.TongTien.ToString("N0")₫</td>
+                        <td>
+                            <span class="adm-badge @(hd.TrangThai == "Hoàn thành" ? "adm-badge-black" : hd.TrangThai == "Đã hủy" ? "adm-badge-gray" : "adm-badge-red")">
+                                @hd.TrangThai.ToUpper()
+                            </span>
+                        </td>
+                        <td class="small text-muted">@hd.NgayLap.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td class="text-end">
+                            <a asp-controller="Admin" asp-action="OrderDetail" asp-route-id="@hd.MaHoaDon" class="adm-action-btn adm-action-edit">
+                                <i class="bi bi-eye"></i> CHI TIẾT
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script>
+        const labelsDay = @Html.Raw(jsonLabelsDay);
+        const dataDay = @Html.Raw(jsonDataDay);
+        const labelsMonth = @Html.Raw(jsonLabelsMonth);
+        const dataMonth = @Html.Raw(jsonDataMonth);
+
+        let revenueChartInstance = null;
+
+        function initDashboardCharts() {
+            Chart.defaults.font.family = "'Montserrat', 'Inter', sans-serif";
+            Chart.defaults.color = '#111111';
+
+            const ctxRev = document.getElementById('revenueChartCanvas');
+            if (ctxRev) {
+                revenueChartInstance = new Chart(ctxRev, {
+                    type: 'bar',
+                    data: {
+                        labels: labelsMonth,
+                        datasets: [{
+                            label: 'DOANH THU (VNĐ)',
+                            data: dataMonth,
+                            backgroundColor: '#E51937',
+                            borderColor: '#111111',
+                            borderWidth: 1,
+                            borderRadius: 0,
+                            maxBarThickness: 36
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#111111',
+                                titleFont: { family: 'Montserrat', weight: 'bold' },
+                                cornerRadius: 0,
+                                callbacks: {
+                                    label: function (ctx) {
+                                        return Number(ctx.raw || 0).toLocaleString('vi-VN') + '₫';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                ticks: { font: { weight: '700', size: 11 } }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: '#E4E4E7' },
+                                ticks: {
+                                    font: { weight: '600', size: 11 },
+                                    callback: function (value) {
+                                        return Number(value).toLocaleString('vi-VN') + '₫';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const ctxStatus = document.getElementById('orderStatusChartCanvas');
+            if (ctxStatus) {
+                new Chart(ctxStatus, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['CHỜ XÁC NHẬN', 'ĐANG GIAO', 'HOÀN THÀNH', 'ĐÃ HỦY'],
+                        datasets: [{
+                            data: [@Model.DonChoXacNhan, @Model.DonDangGiao, @Model.DonHoanThanh, @Model.DonDaHuy],
+                            backgroundColor: ['#E51937', '#111111', '#52525B', '#D4D4D8'],
+                            borderColor: '#FFFFFF',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '62%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    boxWidth: 12,
+                                    font: { family: 'Montserrat', weight: '700', size: 11 }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function switchRevenueChart(mode) {
+            if (!revenueChartInstance) return;
+            const btnMonth = document.getElementById('btnChartMonth');
+            const btnDay = document.getElementById('btnChartDay');
+
+            if (mode === 'day') {
+                revenueChartInstance.data.labels = labelsDay;
+                revenueChartInstance.data.datasets[0].data = dataDay;
+                revenueChartInstance.data.datasets[0].backgroundColor = '#111111';
+                btnDay.className = 'adm-btn adm-btn-black adm-btn-sm';
+                btnMonth.className = 'adm-btn adm-btn-outline adm-btn-sm';
+            } else {
+                revenueChartInstance.data.labels = labelsMonth;
+                revenueChartInstance.data.datasets[0].data = dataMonth;
+                revenueChartInstance.data.datasets[0].backgroundColor = '#E51937';
+                btnMonth.className = 'adm-btn adm-btn-red adm-btn-sm';
+                btnDay.className = 'adm-btn adm-btn-outline adm-btn-sm';
+            }
+            revenueChartInstance.update();
+        }
+
+        document.addEventListener('DOMContentLoaded', initDashboardCharts);
+    </script>
+}

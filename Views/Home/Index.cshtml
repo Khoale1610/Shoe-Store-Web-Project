@@ -1,0 +1,279 @@
+﻿@model HomeViewModel
+@{
+    ViewData["Title"] = "TRANG CHỦ";
+}
+
+<!-- 1. HERO BANNER: FULL-WIDTH CAROUSEL TỶ LỆ 16:6, NÚT CHUYỂN SLIDE < > VUÔNG VỨC TỐI GIẢN -->
+<section class="sb-hero-section">
+    <div id="sbHeroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+        <div class="carousel-inner">
+            <!-- Slide 1 -->
+            <div class="carousel-item active">
+                <div class="sb-hero-slide" style="background-image: linear-gradient(90deg, rgba(17,17,17,0.88) 0%, rgba(17,17,17,0.45) 55%, rgba(17,17,17,0.1) 100%), url('https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=1800&q=85');">
+                    <div class="container h-100 d-flex align-items-center">
+                        <div class="sb-hero-caption">
+                            <span class="sb-hero-tag">NEW COLLECTION 2026</span>
+                            <h1 class="sb-hero-title">ICONIC STREETWEAR<br />SNEAKER CULTURE</h1>
+                            <p class="sb-hero-desc">Bộ sưu tập giày Sneaker & Running chính hãng mới nhất từ Nike, Air Jordan, Adidas, Converse & New Balance.</p>
+                            <div class="d-flex flex-wrap gap-3 mt-4">
+                                <a asp-controller="Product" asp-action="Index" class="sb-btn sb-btn-red">
+                                    MUA NGAY →
+                                </a>
+                                <a asp-controller="Product" asp-action="Index" asp-route-nhanNoiBat="Moi" class="sb-btn sb-btn-outline-white">
+                                    HÀNG MỚI VỀ
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="carousel-item">
+                <div class="sb-hero-slide" style="background-image: linear-gradient(90deg, rgba(17,17,17,0.9) 0%, rgba(17,17,17,0.45) 55%, rgba(17,17,17,0.15) 100%), url('https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1800&q=85');">
+                    <div class="container h-100 d-flex align-items-center">
+                        <div class="sb-hero-caption">
+                            <span class="sb-hero-tag">SPECIAL PRICE UP TO 30% OFF</span>
+                            <h1 class="sb-hero-title">PERFORMANCE<br />RUNNING SERIES</h1>
+                            <p class="sb-hero-desc">Nhập mã <strong>STRIDE20</strong> giảm trực tiếp 20% cho toàn bộ dòng giày Chạy bộ & Tập luyện chuyên nghiệp.</p>
+                            <div class="d-flex flex-wrap gap-3 mt-4">
+                                <a asp-controller="Product" asp-action="Index" asp-route-nhanNoiBat="GiamGia" class="sb-btn sb-btn-red">
+                                    SĂN SALE NGAY →
+                                </a>
+                                <a asp-controller="Product" asp-action="Index" asp-route-maDanhMuc="1" class="sb-btn sb-btn-outline-white">
+                                    GIÀY THỂ THAO
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="carousel-item">
+                <div class="sb-hero-slide" style="background-image: linear-gradient(90deg, rgba(17,17,17,0.88) 0%, rgba(17,17,17,0.45) 55%, rgba(17,17,17,0.15) 100%), url('https://images.unsplash.com/photo-1607522370275-f14206abe5d3?auto=format&fit=crop&w=1800&q=85');">
+                    <div class="container h-100 d-flex align-items-center">
+                        <div class="sb-hero-caption">
+                            <span class="sb-hero-tag">TIMELESS CLASSICS</span>
+                            <h1 class="sb-hero-title">NOT SHOES,<br />WE ARE SNEAKER</h1>
+                            <p class="sb-hero-desc">Cam kết 100% Chính hãng Authentic — Đổi Size miễn phí trong 30 ngày — Giao hàng toàn quốc.</p>
+                            <div class="d-flex flex-wrap gap-3 mt-4">
+                                <a asp-controller="Product" asp-action="Index" asp-route-maDanhMuc="2" class="sb-btn sb-btn-red">
+                                    KHÁM PHÁ SNEAKER →
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nút chuyển slide < > vuông vức tối giản -->
+        <button class="sb-carousel-control prev" type="button" data-bs-target="#sbHeroCarousel" data-bs-slide="prev" aria-label="Slide trước">
+            <span>&lt;</span>
+        </button>
+        <button class="sb-carousel-control next" type="button" data-bs-target="#sbHeroCarousel" data-bs-slide="next" aria-label="Slide tiếp">
+            <span>&gt;</span>
+        </button>
+    </div>
+</section>
+
+<!-- 2. THANH DANH MỤC THƯƠNG HIỆU NỔI BẬT (BRAND STRIP - 5 THẺ VUÔNG SẮC NÉT) -->
+<section class="py-5 border-bottom">
+    <div class="container">
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
+            <!-- Brand 1: NIKE -->
+            <div class="col">
+                <a asp-controller="Product" asp-action="Index" asp-route-thuongHieu="Nike" class="sb-brand-card">
+                    <div class="sb-brand-img-wrap">
+                        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80" alt="NIKE" />
+                    </div>
+                    <div class="sb-brand-meta">
+                        <div class="sb-brand-name">NIKE</div>
+                        <div class="sb-brand-count">5 Sản phẩm</div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Brand 2: ADIDAS -->
+            <div class="col">
+                <a asp-controller="Product" asp-action="Index" asp-route-thuongHieu="Adidas" class="sb-brand-card">
+                    <div class="sb-brand-img-wrap">
+                        <img src="https://images.unsplash.com/photo-1587563871167-1ee9c731aefb?auto=format&fit=crop&w=600&q=80" alt="ADIDAS" />
+                    </div>
+                    <div class="sb-brand-meta">
+                        <div class="sb-brand-name">ADIDAS</div>
+                        <div class="sb-brand-count">2 Sản phẩm</div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Brand 3: CONVERSE & JORDAN -->
+            <div class="col">
+                <a asp-controller="Product" asp-action="Index" asp-route-maDanhMuc="9" class="sb-brand-card">
+                    <div class="sb-brand-img-wrap">
+                        <img src="https://images.unsplash.com/photo-1607522370275-f14206abe5d3?auto=format&fit=crop&w=600&q=80" alt="CONVERSE & JORDAN" />
+                    </div>
+                    <div class="sb-brand-meta">
+                        <div class="sb-brand-name">CONVERSE / JORDAN</div>
+                        <div class="sb-brand-count">2 Sản phẩm</div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Brand 4: NEW BALANCE & PUMA -->
+            <div class="col">
+                <a asp-controller="Product" asp-action="Index" asp-route-maDanhMuc="10" class="sb-brand-card">
+                    <div class="sb-brand-img-wrap">
+                        <img src="https://images.unsplash.com/photo-1539185441755-769473a23570?auto=format&fit=crop&w=600&q=80" alt="NEW BALANCE & PUMA" />
+                    </div>
+                    <div class="sb-brand-meta">
+                        <div class="sb-brand-name">NEW BALANCE / PUMA</div>
+                        <div class="sb-brand-count">2 Sản phẩm</div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Brand 5: CLARKS & COLE HAAN -->
+            <div class="col">
+                <a asp-controller="Product" asp-action="Index" asp-route-maDanhMuc="4" class="sb-brand-card">
+                    <div class="sb-brand-img-wrap">
+                        <img src="https://images.unsplash.com/photo-1614252369475-531eba835eb1?auto=format&fit=crop&w=600&q=80" alt="CLARKS & COLE HAAN" />
+                    </div>
+                    <div class="sb-brand-meta">
+                        <div class="sb-brand-name">CLARKS / COLE HAAN</div>
+                        <div class="sb-brand-count">3 Sản phẩm</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3. KHU VỰC SẢN PHẨM MỚI (NEW ARRIVALS) - GRID 4 CỘT TRÊN DESKTOP, 2 CỘT TRÊN MOBILE -->
+<section class="py-5">
+    <div class="container">
+        <div class="sb-section-header d-flex justify-content-between align-items-end mb-4">
+            <div>
+                <h2 class="sb-section-title">SẢN PHẨM MỚI</h2>
+                <div class="sb-section-line"></div>
+            </div>
+            <a asp-controller="Product" asp-action="Index" asp-route-nhanNoiBat="Moi" class="sb-section-more">
+                XEM TẤT CẢ →
+            </a>
+        </div>
+
+        <div class="row g-3 g-md-4">
+            @foreach (var sp in Model.SanPhamMoi)
+            {
+                <div class="col-6 col-md-4 col-lg-3">
+                    <partial name="_ProductCard" model="sp" />
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- 4. BANNER MÃ KHUYẾN MÃI TƯƠNG PHẢN CAO -->
+@if (Model.KhuyenMaiHienHanh.Any())
+{
+    <section class="py-4 bg-light-gray border-top border-bottom">
+        <div class="container">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                <h5 class="sb-section-title fs-5 mb-0">MÃ GIẢM GIÁ ĐANG ÁP DỤNG</h5>
+                <span class="small text-muted">Sao chép mã và nhập tại bước Giỏ hàng</span>
+            </div>
+            <div class="row g-3">
+                @foreach (var km in Model.KhuyenMaiHienHanh.Take(4))
+                {
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="sb-voucher-box d-flex flex-column justify-content-between h-100">
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="sb-badge-sale">- @km.PhanTramGiam%</span>
+                                    <span class="small text-muted">HSD: @km.NgayKetThuc.ToString("dd/MM/yyyy")</span>
+                                </div>
+                                <div class="sb-voucher-code">@km.MaCode</div>
+                                <div class="small text-secondary">@km.TenChuongTrinh</div>
+                            </div>
+                            <button type="button"
+                                    class="sb-btn sb-btn-black w-100 mt-3 py-2 btn-copy-voucher"
+                                    style="height: 36px; font-size: 11px;"
+                                    data-code="@km.MaCode">
+                                SAO CHÉP MÃ: @km.MaCode
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+<!-- 5. KHU VỰC SẢN PHẨM BÁN CHẠY (BEST SELLERS) -->
+<section class="py-5">
+    <div class="container">
+        <div class="sb-section-header d-flex justify-content-between align-items-end mb-4">
+            <div>
+                <h2 class="sb-section-title">SẢN PHẨM BÁN CHẠY</h2>
+                <div class="sb-section-line"></div>
+            </div>
+            <a asp-controller="Product" asp-action="Index" asp-route-nhanNoiBat="BanChay" class="sb-section-more">
+                XEM TẤT CẢ →
+            </a>
+        </div>
+
+        <div class="row g-3 g-md-4">
+            @foreach (var sp in Model.SanPhamBanChay)
+            {
+                <div class="col-6 col-md-4 col-lg-3">
+                    <partial name="_ProductCard" model="sp" />
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- 6. CAM KẾT DỊCH VỤ TỐI GIẢN -->
+<section class="py-4 border-top">
+    <div class="container">
+        <div class="row g-4 text-center text-md-start">
+            <div class="col-6 col-md-3">
+                <div class="sb-policy-item">
+                    <i class="bi bi-patch-check sb-policy-icon"></i>
+                    <div>
+                        <div class="sb-policy-title">100% AUTHENTIC</div>
+                        <div class="sb-policy-sub">Cam kết chính hãng trọn đời</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="sb-policy-item">
+                    <i class="bi bi-arrow-left-right sb-policy-icon"></i>
+                    <div>
+                        <div class="sb-policy-title">ĐỔI SIZE 30 NGÀY</div>
+                        <div class="sb-policy-sub">Hỗ trợ đổi cỡ nhanh chóng</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="sb-policy-item">
+                    <i class="bi bi-truck sb-policy-icon"></i>
+                    <div>
+                        <div class="sb-policy-title">FREE SHIPPING</div>
+                        <div class="sb-policy-sub">Miễn phí giao hàng toàn quốc</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="sb-policy-item">
+                    <i class="bi bi-shield-check sb-policy-icon"></i>
+                    <div>
+                        <div class="sb-policy-title">BẢO HÀNH 365 NGÀY</div>
+                        <div class="sb-policy-sub">Bảo hành keo chỉ miễn phí</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

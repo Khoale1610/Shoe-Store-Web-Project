@@ -1,0 +1,235 @@
+﻿@model ProductFormViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = $"CẬP NHẬT SẢN PHẨM #{Model.MaSanPham}";
+}
+
+<div class="adm-panel">
+    <div class="adm-panel-head d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="adm-panel-title mb-0">CHỈNH SỬA SẢN PHẨM #@Model.MaSanPham: @Model.TenSanPham.ToUpper()</h2>
+            <span class="adm-panel-sub">Cập nhật thông tin giày, tải ảnh mới, đổi loại sản phẩm, giới tính, nhãn nổi bật và các Size/Màu</span>
+        </div>
+        <a asp-controller="Admin" asp-action="Products" class="adm-btn adm-btn-outline adm-btn-sm">
+            ← QUAY LẠI DANH SÁCH
+        </a>
+    </div>
+
+    <div class="p-4">
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger rounded-0 border-dark small mb-4">
+                <div asp-validation-summary="All" class="mb-0"></div>
+            </div>
+        }
+
+        <form asp-controller="Admin" asp-action="EditProduct" method="post" enctype="multipart/form-data" novalidate>
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="MaSanPham" />
+
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label asp-for="TenSanPham" class="adm-label">TÊN SẢN PHẨM GIÀY <span class="text-sale">*</span></label>
+                            <input asp-for="TenSanPham" class="adm-input" />
+                            <span asp-validation-for="TenSanPham" class="text-sale small"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="ThuongHieu" class="adm-label">THƯƠNG HIỆU <span class="text-sale">*</span></label>
+                            <input asp-for="ThuongHieu" class="adm-input" />
+                            <span asp-validation-for="ThuongHieu" class="text-sale small"></span>
+                        </div>
+
+                        <!-- DROPDOWN CHỌN LOẠI SẢN PHẨM -->
+                        <div class="col-md-6">
+                            <label asp-for="MaDanhMuc" class="adm-label">LOẠI SẢN PHẨM (DROPDOWN DANH MỤC) <span class="text-sale">*</span></label>
+                            <select asp-for="MaDanhMuc" class="adm-select">
+                                @foreach (var dm in Model.DanhSachDanhMuc)
+                                {
+                                    <option value="@dm.MaDanhMuc">
+                                        @(dm.MaDanhMucCha == null ? $"[CHA] {dm.TenDanhMuc.ToUpper()}" : $"   ↳ {dm.TenDanhMuc} ({dm.DanhMucCha?.TenDanhMuc})")
+                                    </option>
+                                }
+                            </select>
+                            <span asp-validation-for="MaDanhMuc" class="text-sale small"></span>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label asp-for="GiaGoc" class="adm-label">GIÁ GỐC NIÊM YẾT (₫) <span class="text-sale">*</span></label>
+                            <input asp-for="GiaGoc" type="number" step="10000" class="adm-input" />
+                            <span asp-validation-for="GiaGoc" class="text-sale small"></span>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label asp-for="GiaBanMacDinh" class="adm-label">GIÁ BÁN THỰC TẾ (₫) <span class="text-sale">*</span></label>
+                            <input asp-for="GiaBanMacDinh" type="number" step="10000" class="adm-input fw-bold text-sale" />
+                            <span asp-validation-for="GiaBanMacDinh" class="text-sale small"></span>
+                        </div>
+
+                        <!-- CUSTOM RADIO BUTTON: GIỚI TÍNH & TRẠNG THÁI KHO -->
+                        <div class="col-md-6">
+                            <div class="adm-field-box h-100">
+                                <label class="adm-label mb-2">GIỚI TÍNH (RADIO BUTTON)</label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <label class="adm-choice-tile">
+                                        <input type="radio" asp-for="GioiTinh" value="Nam" />
+                                        <span>GIÀY NAM</span>
+                                    </label>
+                                    <label class="adm-choice-tile">
+                                        <input type="radio" asp-for="GioiTinh" value="Nữ" />
+                                        <span>GIÀY NỮ</span>
+                                    </label>
+                                    <label class="adm-choice-tile">
+                                        <input type="radio" asp-for="GioiTinh" value="Unisex" />
+                                        <span>UNISEX</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="adm-field-box h-100">
+                                <label class="adm-label mb-2">TRẠNG THÁI KHO HÀNG (RADIO BUTTON)</label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <label class="adm-choice-tile">
+                                        <input type="radio" asp-for="TrangThaiHang" value="ConHang" />
+                                        <span>CÒN HÀNG (MỞ BÁN)</span>
+                                    </label>
+                                    <label class="adm-choice-tile is-danger">
+                                        <input type="radio" asp-for="TrangThaiHang" value="HetHang" />
+                                        <span>HẾT HÀNG (TỒN = 0)</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CUSTOM CHECKBOX: NHÃN NỔI BẬT -->
+                        <div class="col-md-8">
+                            <div class="adm-field-box h-100">
+                                <label class="adm-label mb-2">NHÃN NỔI BẬT HIỂN THỊ (CHECKBOX)</label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <label class="adm-choice-tile">
+                                        <input type="checkbox" name="NhanNoiBatList" value="Moi" checked="@(Model.NhanNoiBatList.Contains("Moi"))" />
+                                        <span>HÀNG MỚI (NEW)</span>
+                                    </label>
+                                    <label class="adm-choice-tile">
+                                        <input type="checkbox" name="NhanNoiBatList" value="BanChay" checked="@(Model.NhanNoiBatList.Contains("BanChay"))" />
+                                        <span>BÁN CHẠY (HOT)</span>
+                                    </label>
+                                    <label class="adm-choice-tile is-danger">
+                                        <input type="checkbox" name="NhanNoiBatList" value="GiamGia" checked="@(Model.NhanNoiBatList.Contains("GiamGia"))" />
+                                        <span>GIẢM GIÁ (SALE)</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="adm-field-box h-100">
+                                <label asp-for="SoLuongTonMoiBienThe" class="adm-label mb-1">SỐ LƯỢNG TỒN / MỖI SIZE</label>
+                                <input asp-for="SoLuongTonMoiBienThe" type="number" min="0" class="adm-input fw-bold" />
+                            </div>
+                        </div>
+
+                        <!-- CUSTOM CHECKBOX: KÍCH CỠ SIZE -->
+                        <div class="col-12">
+                            <div class="adm-field-box">
+                                <label class="adm-label mb-2">KÍCH CỠ SIZE GIÀY MỞ BÁN (CHECKBOX) <span class="text-sale">*</span></label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach (var kc in Model.TatCaKichCo)
+                                    {
+                                        bool isChecked = Model.SelectedSizeIds.Contains(kc.MaKichCo);
+                                        <label class="adm-choice-tile adm-size-tile">
+                                            <input type="checkbox" name="SelectedSizeIds" value="@kc.MaKichCo" checked="@isChecked" />
+                                            <span>SIZE @kc.SoKichCo</span>
+                                        </label>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CUSTOM CHECKBOX: MÀU SẮC -->
+                        <div class="col-12">
+                            <div class="adm-field-box">
+                                <label class="adm-label mb-2">MÀU SẮC CỦA MẪU GIÀY (CHECKBOX) <span class="text-sale">*</span></label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach (var mau in Model.TatCaMauSac)
+                                    {
+                                        bool isChecked = Model.SelectedColorIds.Contains(mau.MaMau);
+                                        <label class="adm-choice-tile">
+                                            <input type="checkbox" name="SelectedColorIds" value="@mau.MaMau" checked="@isChecked" />
+                                            <span class="d-inline-flex align-items-center gap-2">
+                                                <i class="color-dot" style="background-color: @mau.MaHex;"></i>
+                                                @mau.TenMau.ToUpper()
+                                            </span>
+                                        </label>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="MoTa" class="adm-label">MÔ TẢ CHI TIẾT SẢN PHẨM</label>
+                            <textarea asp-for="MoTa" rows="4" class="adm-textarea"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UPLOAD HÌNH ẢNH -->
+                <div class="col-lg-4">
+                    <div class="adm-field-box h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <label class="adm-label">HÌNH ẢNH ĐẠI DIỆN SẢN PHẨM</label>
+                            <p class="small text-muted mb-3">
+                                Tải file mới lên <code>wwwroot/uploads/products/</code> hoặc giữ nguyên ảnh hiện tại.
+                            </p>
+
+                            <div class="mb-3 bg-light-gray border p-2 text-center">
+                                <img id="imgUploadPreview"
+                                     src="@Model.HinhAnhHienTai"
+                                     alt="@Model.TenSanPham"
+                                     class="w-100"
+                                     style="aspect-ratio: 1/1; object-fit: cover;" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="HinhAnhFile" class="adm-label">TẢI LÊN ẢNH MỚI THAY THẾ:</label>
+                                <input asp-for="HinhAnhFile" type="file" accept="image/*" class="form-control rounded-0" onchange="previewUploadedShoeImage(this)" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="HinhAnhHienTai" class="adm-label text-muted">ĐƯỜNG DẪN ẢNH HIỆN TẠI:</label>
+                                <input asp-for="HinhAnhHienTai" class="adm-input" />
+                            </div>
+                        </div>
+
+                        <div class="pt-3 border-top">
+                            <button type="submit" class="adm-btn adm-btn-black w-100 mb-2">
+                                <i class="bi bi-save me-2"></i>CẬP NHẬT SẢN PHẨM
+                            </button>
+                            <a asp-controller="Admin" asp-action="Products" class="adm-btn adm-btn-outline w-100">HỦY BỎ</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function previewUploadedShoeImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const preview = document.getElementById('imgUploadPreview');
+                    if (preview) preview.src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}

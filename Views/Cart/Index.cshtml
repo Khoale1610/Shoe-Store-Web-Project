@@ -1,0 +1,184 @@
+﻿@model CartPageViewModel
+@{
+    ViewData["Title"] = "GIỎ HÀNG";
+}
+
+<div class="sb-breadcrumb-bar">
+    <div class="container py-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 small text-uppercase">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-decoration-none text-muted">HOME</a></li>
+                <li class="breadcrumb-item active fw-bold text-dark" aria-current="page">GIỎ HÀNG CỦA BẠN</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="py-5">
+    <div class="container">
+        <div class="sb-section-header mb-4">
+            <h1 class="sb-section-title">GIỎ HÀNG CỦA BẠN</h1>
+            <div class="sb-section-line"></div>
+        </div>
+
+        @if (!Model.Items.Any())
+        {
+            <div class="sb-empty-state text-center py-5">
+                <i class="bi bi-bag-x fs-1 text-muted d-block mb-3"></i>
+                <h5 class="fw-bold text-uppercase mb-2">GIỎ HÀNG CỦA BẠN ĐANG TRỐNG</h5>
+                <p class="text-muted small mb-4">Hãy chọn thêm các mẫu giày Sneaker chính hãng vào giỏ hàng.</p>
+                <a asp-controller="Product" asp-action="Index" class="sb-btn sb-btn-red px-5">
+                    TIẾP TỤC MUA SẮM →
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="row g-4" id="cartMainWrapper">
+                <!-- Danh sách sản phẩm trong giỏ -->
+                <div class="col-lg-8">
+                    <div class="border bg-white">
+                        <div class="p-3 bg-light-gray border-bottom d-flex justify-content-between align-items-center">
+                            <span class="fw-bold text-uppercase small">
+                                SẢN PHẨM TRONG GIỎ (<span id="cartItemCountText">@Model.Items.Sum(i => i.SoLuong)</span> ĐÔI)
+                            </span>
+                            <a asp-controller="Product" asp-action="Index" class="small fw-bold text-dark text-decoration-underline">
+                                + MUA THÊM SẢN PHẨM KHÁC
+                            </a>
+                        </div>
+
+                        <div id="cartItemsList">
+                            @foreach (var item in Model.Items)
+                            {
+                                <div class="cart-item-row p-3 p-md-4 border-bottom" data-variant-id="@item.MaBienThe">
+                                    <div class="row align-items-center g-3">
+                                        <div class="col-3 col-sm-2">
+                                            <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.MaSanPham" class="d-block bg-light-gray border">
+                                                <img src="@item.HinhAnh"
+                                                     alt="@item.TenSanPham"
+                                                     class="w-100"
+                                                     style="aspect-ratio: 1/1; object-fit: cover;"
+                                                     onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80';" />
+                                            </a>
+                                        </div>
+
+                                        <div class="col-9 col-sm-4">
+                                            <div class="small text-muted text-uppercase fw-bold" style="font-size: 11px;">@item.ThuongHieu</div>
+                                            <h6 class="fw-bold mb-1">
+                                                <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.MaSanPham" class="text-dark text-decoration-none">
+                                                    @item.TenSanPham
+                                                </a>
+                                            </h6>
+                                            <div class="small text-muted">
+                                                SKU: @item.MaSKU | Màu: <strong class="text-dark">@item.TenMau</strong> | Size: <strong class="text-dark">@item.SoKichCo</strong>
+                                            </div>
+                                            <div class="small fw-bold text-dark mt-1">@item.DonGia.ToString("N0")₫</div>
+                                        </div>
+
+                                        <div class="col-6 col-sm-3">
+                                            <div class="sb-qty-box d-inline-flex align-items-center">
+                                                <button type="button" class="sb-qty-btn btn-cart-qty-minus" data-variant-id="@item.MaBienThe">−</button>
+                                                <input type="number"
+                                                       class="sb-qty-input cart-qty-input"
+                                                       data-variant-id="@item.MaBienThe"
+                                                       value="@item.SoLuong"
+                                                       min="1"
+                                                       max="@item.SoLuongTon" />
+                                                <button type="button" class="sb-qty-btn btn-cart-qty-plus" data-variant-id="@item.MaBienThe">+</button>
+                                            </div>
+                                            <div class="small text-muted mt-1" style="font-size: 11px;">Kho còn: @item.SoLuongTon</div>
+                                        </div>
+
+                                        <div class="col-6 col-sm-3 text-end">
+                                            <div class="fw-extrabold text-sale fs-6 cart-item-subtotal" data-variant-id="@item.MaBienThe">
+                                                @item.ThanhTien.ToString("N0")₫
+                                            </div>
+                                            <button type="button"
+                                                    class="btn btn-link text-muted small text-decoration-underline p-0 mt-1 btn-cart-remove"
+                                                    data-variant-id="@item.MaBienThe">
+                                                XÓA
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Khung Áp mã khuyến mãi & Tổng tiền -->
+                <div class="col-lg-4">
+                    <div class="border bg-white p-4">
+                        <h6 class="fw-extrabold text-uppercase pb-3 mb-3 border-bottom">
+                            THÔNG TIN ĐƠN HÀNG
+                        </h6>
+
+                        <!-- Mã khuyến mãi AJAX -->
+                        <div class="mb-4">
+                            <label class="small fw-bold text-uppercase d-block mb-2">MÃ GIẢM GIÁ (VOUCHER)</label>
+                            <div class="d-flex">
+                                <input type="text"
+                                       id="voucherCodeInput"
+                                       value="@Model.MaCodeKhuyenMai"
+                                       class="sb-input text-uppercase fw-bold"
+                                       placeholder="NHẬP MÃ GIẢM GIÁ..." />
+                                <button type="button" id="btnApplyVoucher" class="sb-btn sb-btn-black px-3" style="height: 38px; white-space: nowrap;">
+                                    ÁP DỤNG
+                                </button>
+                            </div>
+
+                            <div id="appliedVoucherBadge" class="mt-2 @(string.IsNullOrEmpty(Model.MaCodeKhuyenMai) ? "d-none" : "")">
+                                <div class="p-2 bg-light-gray border d-flex align-items-center justify-content-between small">
+                                    <span>
+                                        Mã: <strong id="appliedCodeText" class="text-sale">@Model.MaCodeKhuyenMai</strong> (-<span id="appliedPercentText">@Model.PhanTramGiam</span>%)
+                                    </span>
+                                    <button type="button" id="btnRemoveVoucher" class="btn-close btn-sm"></button>
+                                </div>
+                            </div>
+
+                            @if (Model.DanhSachKhuyenMai.Any())
+                            {
+                                <div class="mt-2">
+                                    <span class="small text-muted d-block mb-1" style="font-size: 11px;">CHỌN NHANH MÃ KHUYẾN MÃI:</span>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        @foreach (var km in Model.DanhSachKhuyenMai)
+                                        {
+                                            <button type="button"
+                                                    class="sb-voucher-pill btn-quick-voucher"
+                                                    data-code="@km.MaCode"
+                                                    title="@km.TenChuongTrinh">
+                                                @km.MaCode (-@km.PhanTramGiam%)
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-2 small">
+                            <span class="text-muted">TẠM TÍNH:</span>
+                            <span class="fw-bold" id="cartSummarySubtotal">@Model.TamTinh.ToString("N0")₫</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2 small text-sale">
+                            <span>GIẢM GIÁ KHUYẾN MÃI:</span>
+                            <span class="fw-bold" id="cartSummaryDiscount">-@Model.TienGiam.ToString("N0")₫</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3 pb-3 border-bottom small">
+                            <span class="text-muted">PHÍ VẬN CHUYỂN:</span>
+                            <span class="fw-bold text-dark">MIỄN PHÍ</span>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-baseline mb-4">
+                            <span class="fw-extrabold text-uppercase">TỔNG CỘNG:</span>
+                            <span class="fw-black fs-4 text-sale" id="cartSummaryTotal">@Model.TongCong.ToString("N0")₫</span>
+                        </div>
+
+                        <a asp-controller="Cart" asp-action="Checkout" class="sb-btn sb-btn-red w-100">
+                            TIẾN HÀNH ĐẶT HÀNG →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>

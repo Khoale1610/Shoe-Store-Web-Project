@@ -1,0 +1,116 @@
+﻿@model List<HoaDon>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "QUẢN LÝ ĐƠN HÀNG";
+    string currentStatus = ViewBag.TrangThai as string ?? "";
+}
+
+<!-- Thanh lọc theo trạng thái đơn hàng & Tìm kiếm (Góc vuông 2px) -->
+<div class="adm-panel p-3 mb-3 d-flex flex-wrap justify-content-between align-items-center gap-3">
+    <div class="d-flex flex-wrap gap-1">
+        <a asp-controller="Admin" asp-action="Orders"
+           class="adm-btn adm-btn-sm @(string.IsNullOrEmpty(currentStatus) ? "adm-btn-black" : "adm-btn-outline")">
+            TẤT CẢ (@Model.Count)
+        </a>
+        <a asp-controller="Admin" asp-action="Orders" asp-route-trangThai="Chờ xác nhận"
+           class="adm-btn adm-btn-sm @(currentStatus == "Chờ xác nhận" ? "adm-btn-red" : "adm-btn-outline")">
+            CHỜ XÁC NHẬN
+        </a>
+        <a asp-controller="Admin" asp-action="Orders" asp-route-trangThai="Đang giao"
+           class="adm-btn adm-btn-sm @(currentStatus == "Đang giao" ? "adm-btn-black" : "adm-btn-outline")">
+            ĐANG GIAO
+        </a>
+        <a asp-controller="Admin" asp-action="Orders" asp-route-trangThai="Hoàn thành"
+           class="adm-btn adm-btn-sm @(currentStatus == "Hoàn thành" ? "adm-btn-black" : "adm-btn-outline")">
+            HOÀN THÀNH
+        </a>
+        <a asp-controller="Admin" asp-action="Orders" asp-route-trangThai="Đã hủy"
+           class="adm-btn adm-btn-sm @(currentStatus == "Đã hủy" ? "adm-btn-red" : "adm-btn-outline")">
+            ĐÃ HỦY
+        </a>
+    </div>
+
+    <form asp-controller="Admin" asp-action="Orders" method="get" class="d-flex gap-2">
+        <input type="hidden" name="trangThai" value="@currentStatus" />
+        <input type="text" name="tuKhoa" value="@ViewBag.TuKhoa" class="adm-input" style="width: 220px;" placeholder="Mã HĐ, Tên, SĐT..." />
+        <button type="submit" class="adm-btn adm-btn-red px-3">TÌM</button>
+    </form>
+</div>
+
+<div class="adm-panel">
+    <div class="table-responsive">
+        <table class="table adm-table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th style="width: 85px;">MÃ HĐ</th>
+                    <th>KHÁCH NHẬN HÀNG</th>
+                    <th>NGÀY ĐẶT</th>
+                    <th class="text-center">SỐ SP</th>
+                    <th>THANH TOÁN</th>
+                    <th>KHUYẾN MÃI</th>
+                    <th>TỔNG TIỀN</th>
+                    <th>TRẠNG THÁI ĐƠN HÀNG</th>
+                    <th class="text-end" style="width: 130px;">CHI TIẾT</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="9" class="text-center py-5 text-muted">Không có đơn hàng nào khớp với bộ lọc.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var hd in Model)
+                    {
+                        <tr>
+                            <td class="fw-extrabold">#@hd.MaHoaDon</td>
+                            <td>
+                                <div class="fw-bold text-dark">@hd.TenNguoiNhan</div>
+                                <div class="small text-muted">@hd.SDTNguoiNhan</div>
+                                <div class="small text-muted text-truncate" style="max-width: 220px;" title="@hd.DiaChiGiaoHang">@hd.DiaChiGiaoHang</div>
+                            </td>
+                            <td class="small text-muted">@hd.NgayLap.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td class="text-center">
+                                <span class="adm-badge adm-badge-gray">@hd.ChiTietHoaDons.Sum(c => c.SoLuong) ĐÔI</span>
+                            </td>
+                            <td>
+                                <span class="adm-badge adm-badge-outline">@hd.PhuongThucThanhToan.ToUpper()</span>
+                            </td>
+                            <td>
+                                @if (hd.KhuyenMai != null)
+                                {
+                                    <span class="adm-badge adm-badge-red">@hd.KhuyenMai.MaCode (-@hd.KhuyenMai.PhanTramGiam%)</span>
+                                }
+                                else
+                                {
+                                    <span class="small text-muted">—</span>
+                                }
+                            </td>
+                            <td class="fw-extrabold text-sale">@hd.TongTien.ToString("N0")₫</td>
+                            <td>
+                                <form asp-controller="Admin" asp-action="UpdateOrderStatus" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="maHoaDon" value="@hd.MaHoaDon" />
+                                    <select name="trangThaiMoi" class="adm-select adm-select-sm fw-bold" style="width: 155px;" onchange="this.form.submit()">
+                                        <option value="Chờ xác nhận" selected="@(hd.TrangThai == "Chờ xác nhận")">CHỜ XÁC NHẬN</option>
+                                        <option value="Đang giao" selected="@(hd.TrangThai == "Đang giao")">ĐANG GIAO</option>
+                                        <option value="Hoàn thành" selected="@(hd.TrangThai == "Hoàn thành")">HOÀN THÀNH</option>
+                                        <option value="Đã hủy" selected="@(hd.TrangThai == "Đã hủy")">ĐÃ HỦY</option>
+                                    </select>
+                                </form>
+                            </td>
+                            <td class="text-end">
+                                <a asp-controller="Admin" asp-action="OrderDetail" asp-route-id="@hd.MaHoaDon"
+                                   class="adm-action-btn adm-action-edit">
+                                    <i class="bi bi-eye"></i> XEM
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
